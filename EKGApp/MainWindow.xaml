@@ -1,0 +1,20 @@
+﻿<Window x:Class="EKGApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:EKGApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <lvc:CartesianChart Name="Graf" Series="{Binding
+Path=MyCollection}" Grid.Row="0"
+Grid.ColumnSpan="2"></lvc:CartesianChart>
+        <Button Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="37,34,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="37,77,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click"/>
+        <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="117,34,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click"/>
+        <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="279,23,0,0" TextWrapping="Wrap" Text="Puls: " VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

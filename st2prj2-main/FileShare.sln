@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileShare", "FileShare\FileShare.csproj", "{A3EE1C14-C579-46D1-9CFD-3A12FBDCF082}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileShareApplication", "FileShareApplication\FileShareApplication.csproj", "{15754FA8-7FD5-4B63-A49E-40C0DA7E4144}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3EE1C14-C579-46D1-9CFD-3A12FBDCF082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3EE1C14-C579-46D1-9CFD-3A12FBDCF082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3EE1C14-C579-46D1-9CFD-3A12FBDCF082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3EE1C14-C579-46D1-9CFD-3A12FBDCF082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15754FA8-7FD5-4B63-A49E-40C0DA7E4144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15754FA8-7FD5-4B63-A49E-40C0DA7E4144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15754FA8-7FD5-4B63-A49E-40C0DA7E4144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15754FA8-7FD5-4B63-A49E-40C0DA7E4144}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

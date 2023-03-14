@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpiDebuggingSession", "RpiDebuggingSession\RpiDebuggingSession.csproj", "{316CE7B5-500E-4D17-AD9E-295E3091B114}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{316CE7B5-500E-4D17-AD9E-295E3091B114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{316CE7B5-500E-4D17-AD9E-295E3091B114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{316CE7B5-500E-4D17-AD9E-295E3091B114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{316CE7B5-500E-4D17-AD9E-295E3091B114}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29CF5313-4D20-4C71-9BD5-2CBB1257D93C}
+	EndGlobalSection
+EndGlobal

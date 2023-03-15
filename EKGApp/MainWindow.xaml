@@ -6,11 +6,35 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:EKGApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
-        <lvc:CartesianChart Name="Graf" Series="{Binding
-Path=MyCollection}" Grid.Row="0"
-Grid.ColumnSpan="2"></lvc:CartesianChart>
+        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Grid.ColumnSpan="2">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis ShowLabels="True" Labels="">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator Stroke="#FFC5C2C2" StrokeThickness="1" IsHitTestVisible="False"/>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+                <lvc:Axis ShowLabels="True" LabelFormatter="{Binding labelformatter}">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator Stroke="#FF9C9898" StrokeThickness="2" IsHitTestVisible="False"/>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Amplitude (mV)" ShowLabels="True" LabelFormatter="{Binding labelformatter1}">
+                    <lvc:Axis.Separator>
+                        <lvc:Separator Stroke="#FFC5C2C2" IsEnabled="True" StrokeThickness="1"></lvc:Separator>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+                <lvc:Axis ShowLabels="true" MinValue="-1" MaxValue="1.5" Labels="" >
+                    <lvc:Axis.Separator>
+                        <lvc:Separator Stroke="#FF9C9898" IsEnabled="True" StrokeThickness="2"></lvc:Separator>
+                    </lvc:Axis.Separator>
+                </lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
         <Button Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="37,34,0,0" VerticalAlignment="Top" Click="Button_Click"/>
         <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="37,77,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click"/>
         <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="117,34,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click"/>

@@ -38,11 +38,15 @@ namespace EKGApp
         List<double> RRList = new List<double>();
 
         bool fileLoaded = false;
+        public Func<double, string> labelformatter { get; set; }
+        public Func<double, string> labelformatter1 { get; set; }
 
         public MainWindow()
         {
 
             InitializeComponent();
+            labelformatter = x => (x / sample).ToString();
+            labelformatter1 = x => (x.ToString("F1"));
             MyCollection = new SeriesCollection();
             EKGLine = new LineSeries();
             EKGLine.Values = new ChartValues<double> { };
@@ -50,6 +54,7 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
+            
 
 
         }
@@ -87,15 +92,16 @@ namespace EKGApp
                 }
             }
         }
+        int Rtak_old = 0;
+        int Rtak_new = 0;
+        double sample = 500;
+        double diff;
+        double threshold = 0.6; //Set carefully
+        bool belowThreshold = true;
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-            int Rtak_old = 0;
-            int Rtak_new = 0;
-            double sample = 0.002;
-            double diff;
-            double threshold = 600; //Set carefully
-            bool belowThreshold = true;
+          
 
             if (fileLoaded== true)
             {
@@ -146,14 +152,17 @@ namespace EKGApp
 
                     if (index > 1)
                     {
-                        var splitLine = line.Trim().Split(','); 
+                        var splitLine = line.Trim().Split(',');
+
+                        var doubleValues = splitLine[1].Replace('.', ',');
+
                         if (splitLine.Length == 2)
                         {
-                            EKGLine.Values.Add(Double.Parse(splitLine[1]));
+                            EKGLine.Values.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
-                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {splitLine.Length} lines after split");
+                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {doubleValues.Length} lines after split");
                         }
                     }
                     index++;
@@ -169,6 +178,27 @@ namespace EKGApp
             FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
             string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file
             Debug.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            Graf.AxisX[0].MinValue = 0;
+            Graf.AxisX[1].MinValue = 0;
+            Graf.AxisX[0].MaxValue = sample;
+            Graf.AxisX[1].MaxValue = sample;
+
+            Graf.AxisX[0].Separator.Step = 0.04 / (1 / sample);
+            Graf.AxisX[1].Separator.Step = 0.2 / (1 / sample);
+
+            Graf.AxisY[0].MinValue = -1;
+            Graf.AxisY[1].MinValue = -1;
+            //Skal indstilles til 1.5 mV, eller hvad der cirka passer. Skal justeres og tilpasses senere 
+            //når vi har målinger vi kan teste på
+            Graf.AxisY[0].MaxValue = 1.5;
+            Graf.AxisY[1].MaxValue = 1.5;
+            Graf.AxisY[0].Separator.Step = 0.1;
+            Graf.AxisY[1].Separator.Step = 0.5;
         }
     }
 }

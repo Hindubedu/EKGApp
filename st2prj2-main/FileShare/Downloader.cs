@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.IO;
+
 namespace FileShare;
 
 public class Downloader
@@ -12,9 +15,30 @@ public class Downloader
     public void Load(string filename, FileStream @out)
     {
         var task = _handler.Download(filename);
-        var content = task.Result;
 
-        using var streamWriter = new StreamWriter(@out);
+        try
+        {
+            task.ContinueWith(t =>
+            {
+                if (t.IsCompleted)
+                {
+                    TaskEnd(t, @out);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        catch (Exception ex)
+        {
+            TaskEnd(task, @out);
+        }
+    }
+
+    private void TaskEnd(object task, FileStream @out)
+    {
+        var t = task as Task<String?>;
+        var content = t.Result;
+        var streamWriter = new StreamWriter(@out);
         streamWriter.Write(content);
+        streamWriter.Flush();
+        streamWriter.Close();
     }
 }

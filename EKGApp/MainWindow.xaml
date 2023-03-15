@@ -15,6 +15,7 @@ Grid.ColumnSpan="2"></lvc:CartesianChart>
         <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="37,77,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click"/>
         <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="117,34,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click"/>
         <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="279,23,0,0" TextWrapping="Wrap" Text="Puls: " VerticalAlignment="Top"/>
+        <Button x:Name="UploadButton" Content="Upload" HorizontalAlignment="Left" Margin="446,39,0,0" VerticalAlignment="Top" Click="UploadButton_Click"/>
 
     </Grid>
 </Window>

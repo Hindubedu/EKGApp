@@ -61,10 +61,10 @@ namespace EKGApp
             int index = 0;
             // To download (on PC)
             Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
-            FileStream newLocalStream = new FileStream("pc_data3.csv", FileMode.Create); // Create a new file
-            downloader.Load("NormaltEKG_6.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
+            FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create); // Create a new file
+            downloader.Load("Files/NormaltEKG_6.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
 
-            using (StreamReader reader = new StreamReader("pc_data.csv")) // Same procedure as last year? (Get data from the file)
+            using (StreamReader reader = new StreamReader("Files/pc_data.csv")) // Same procedure as last year? (Get data from the file)
             {
                 while (!reader.EndOfStream)
                 {
@@ -138,7 +138,7 @@ namespace EKGApp
             RRList.Clear();
             int index = 0;
 
-            using (StreamReader reader = new StreamReader("NormaltEKG.csv")) // Same procedure as every year...
+            using (StreamReader reader = new StreamReader("Files/NormaltEKG.csv")) // Same procedure as every year...
             {
                 while (!reader.EndOfStream)
                 {

@@ -60,9 +60,9 @@ namespace EKGApp
             RRList.Clear();
             int index = 0;
             // To download (on PC)
-            Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name
-            FileStream newLocalStream = new FileStream("pc_data.csv", FileMode.Create); // Create a new file
-            downloader.Load("NormaltEKG.csv", newLocalStream); // Get data from the file specified 
+            Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
+            FileStream newLocalStream = new FileStream("pc_data3.csv", FileMode.Create); // Create a new file
+            downloader.Load("NormaltEKG_6.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
 
             using (StreamReader reader = new StreamReader("pc_data.csv")) // Same procedure as last year? (Get data from the file)
             {
@@ -160,6 +160,15 @@ namespace EKGApp
                 }
             }
             fileLoaded = true;
+        }
+
+        private void UploadButton_Click(object sender, RoutedEventArgs e)
+        {
+            //To upload (on RaspBerry)
+            Uploader uploader = new Uploader("F23_Gruppe_02"); // Create an Uploader instance with a group name
+            FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
+            string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file
+            Debug.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
         }
     }
 }

@@ -1,5 +1,5 @@
+using System.Diagnostics;
 using System.Reflection.Metadata;
-
 namespace FileShare;
 
 public class Uploader
@@ -13,7 +13,33 @@ public class Uploader
 
     public string Save(string filename, FileStream @in)
     {
-        return handler.Upload(filename, @in).Result;
+        String Result = "";
+        var task = handler.Upload(filename, @in);
+
+        try
+        {
+            task.ContinueWith(t =>
+            {
+                if (t.IsCompleted)
+                {
+                    Result = TaskEnd(t);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+        catch (Exception ex)
+        {
+            Result = TaskEnd(task);
+        }
+
+        return Result;
     }
-    
+
+    private String TaskEnd(object task)
+    {
+        var t = task as Task<String?>;
+        var content = t.Result;
+
+        return (content == null ? "" : content);
+    }
+
 }

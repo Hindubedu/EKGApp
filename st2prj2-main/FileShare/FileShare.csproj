@@ -9,7 +9,6 @@
     <ItemGroup>
       <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
       <PackageReference Include="Google.Apis.Firebasestorage.v1beta" Version="1.59.0.2836" />
-      <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     </ItemGroup>
 
 </Project>

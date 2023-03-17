@@ -14,22 +14,12 @@ public class Downloader
 
     public void Load(string filename, FileStream @out)
     {
-        var task = _handler.Download(filename);
-
-        try
+        Task.Run(() =>
         {
-            task.ContinueWith(t =>
-            {
-                if (t.IsCompleted)
-                {
-                    TaskEnd(t, @out);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-        catch (Exception ex)
-        {
+            var task = _handler.Download(filename);
             TaskEnd(task, @out);
-        }
+        }).Wait();
+        
     }
 
     private void TaskEnd(object task, FileStream @out)
@@ -41,4 +31,5 @@ public class Downloader
         streamWriter.Flush();
         streamWriter.Close();
     }
+ 
 }

@@ -25,6 +25,7 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace EKGApp
 {
@@ -43,7 +44,6 @@ namespace EKGApp
 
         public MainWindow()
         {
-
             InitializeComponent();
             labelformatter = x => (x / sample).ToString();
             labelformatter1 = x => (x.ToString("F1"));
@@ -54,38 +54,40 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
-            
-
-
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             EKGLine.Values.Clear();
             RRList.Clear();
             int index = 0;
             // To download (on PC)
             Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
-            FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create); // Create a new file
-            downloader.Load("Files/NormaltEKG_6.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
+            FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create) ; // Create a new file
+            downloader.Load("NormaltEKG_9.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
+            var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
-            using (StreamReader reader = new StreamReader("Files/pc_data.csv")) // Same procedure as last year? (Get data from the file)
+
+            using (StreamReader reader = new StreamReader(stream2)) // Same procedure as last year? (Get data from the file)
             {
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    Console.WriteLine(line);
-
+                    
                     if (index > 1)
                     {
-                        var splitLine = line.Trim().Split(','); //do we need to trim?
+                        var splitLine = line.Trim().Split(',');
+
+                        var doubleValues = splitLine[1].Replace('.', ',');
+
                         if (splitLine.Length == 2)
                         {
-                            EKGLine.Values.Add(splitLine[1]); 
+                            EKGLine.Values.Add(Double.Parse(doubleValues));
+                            RRList.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
-                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {splitLine.Length} lines after split");
+                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {doubleValues.Length} lines after split");
                         }
                     }
                     index++;
@@ -101,8 +103,6 @@ namespace EKGApp
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-          
-
             if (fileLoaded== true)
             {
                 RRList.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
@@ -112,7 +112,7 @@ namespace EKGApp
                     {
                         Rtak_new = i;
 
-                        diff = (Rtak_new - Rtak_old) * sample; //samplerate 0.002 samples /s
+                        diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
                         RRList.Add(diff);
                         Rtak_old = i;
                         Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");

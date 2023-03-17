@@ -44,7 +44,6 @@ namespace EKGApp
 
         public MainWindow()
         {
-
             InitializeComponent();
             labelformatter = x => (x / sample).ToString();
             labelformatter1 = x => (x.ToString("F1"));
@@ -55,12 +54,9 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
-            
-
-
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             EKGLine.Values.Clear();
             RRList.Clear();
@@ -77,18 +73,21 @@ namespace EKGApp
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    Console.WriteLine(line);
-
+                    
                     if (index > 1)
                     {
-                        var splitLine = line.Trim().Split(','); //do we need to trim?
+                        var splitLine = line.Trim().Split(',');
+
+                        var doubleValues = splitLine[1].Replace('.', ',');
+
                         if (splitLine.Length == 2)
                         {
-                            EKGLine.Values.Add(Double.Parse(splitLine[1])); 
+                            EKGLine.Values.Add(Double.Parse(doubleValues));
+                            RRList.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
-                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {splitLine.Length} lines after split");
+                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {doubleValues.Length} lines after split");
                         }
                     }
                     index++;
@@ -104,8 +103,6 @@ namespace EKGApp
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-          
-
             if (fileLoaded== true)
             {
                 RRList.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
@@ -115,7 +112,7 @@ namespace EKGApp
                     {
                         Rtak_new = i;
 
-                        diff = (Rtak_new - Rtak_old) * sample; //samplerate 0.002 samples /s
+                        diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
                         RRList.Add(diff);
                         Rtak_old = i;
                         Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");

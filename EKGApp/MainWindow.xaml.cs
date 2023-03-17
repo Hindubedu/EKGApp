@@ -64,8 +64,10 @@ namespace EKGApp
             Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
             FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create) ; // Create a new file
             downloader.Load("NormaltEKG_9.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
+            var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
-            using (StreamReader reader = new StreamReader(newLocalStream)) // Same procedure as last year? (Get data from the file)
+
+            using (StreamReader reader = new StreamReader(stream2)) // Same procedure as last year? (Get data from the file)
             {
                 while (!reader.EndOfStream)
                 {

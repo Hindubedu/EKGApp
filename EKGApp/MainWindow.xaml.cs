@@ -93,6 +93,7 @@ namespace EKGApp
                     index++;
                 }
             }
+            fileLoaded = true;
         }
         int Rtak_old = 0;
         int Rtak_new = 0;

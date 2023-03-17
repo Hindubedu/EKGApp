@@ -1,0 +1,6 @@
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RpiDebuggingSession
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RpiDebuggingSession.dll
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RpiDebuggingSession.deps.json
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RpiDebuggingSession.runtimeconfig.json
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RpiDebuggingSession.pdb
+C:\Users\nikol\Documents\Sundhedsteknologi\2 Semester\Programmering 2\Projects\RpiDebuggingSession\RpiDebuggingSession\bin\Debug\net6.0\linux-arm\Publish\RaspberryNetCore.dll

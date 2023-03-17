@@ -48,7 +48,7 @@ namespace EKGApp
             labelformatter = x => (x / sample).ToString();
             labelformatter1 = x => (x.ToString("F1"));
             MyCollection = new SeriesCollection();
-            EKGLine = new LineSeries();
+            EKGLine = new LineSeries(); //Hej
             EKGLine.Values = new ChartValues<double> { };
             EKGLine.Fill = Brushes.Transparent;
             EKGLine.PointGeometry = null;

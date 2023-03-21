@@ -56,7 +56,7 @@ namespace EKGApp
             DataContext = this;
         }
 
-        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        private void LoadButton_Click(object sender, RoutedEventArgs e) //Change
         {
             EKGLine.Values.Clear();
             RRList.Clear();
@@ -82,7 +82,7 @@ namespace EKGApp
 
                         if (splitLine.Length == 2)
                         {
-                            EKGLine.Values.Add(Double.Parse(doubleValues));
+                            EKGLine.Values.Add(Double.Parse(doubleValues)); 
                             RRList.Add(Double.Parse(doubleValues));
                         }
                         else
@@ -93,6 +93,7 @@ namespace EKGApp
                     index++;
                 }
             }
+            fileLoaded = true;
         }
         int Rtak_old = 0;
         int Rtak_new = 0;

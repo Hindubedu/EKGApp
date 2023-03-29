@@ -3,6 +3,7 @@
 using FileShare;
 
  //To upload (on RaspBerry)
+
 Uploader uploader = new Uploader("F23_Gruppe_02"); // Create an Uploader instance with a group name   F23_Gruppe_02
 FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
 string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file

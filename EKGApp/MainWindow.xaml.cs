@@ -38,6 +38,8 @@ namespace EKGApp
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
 
+
+
         bool fileLoaded = false;
         public Func<double, string> labelformatter { get; set; }
         public Func<double, string> labelformatter1 { get; set; }
@@ -200,6 +202,12 @@ namespace EKGApp
             Graf.AxisY[1].MaxValue = 1.5;
             Graf.AxisY[0].Separator.Step = 0.1;
             Graf.AxisY[1].Separator.Step = 0.5;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Histogram histogram = new Histogram(RRList);
+
         }
     }
 }

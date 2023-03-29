@@ -62,6 +62,7 @@ namespace EKGApp
             RRList.Clear();
             int index = 0;
             // To download (on PC)
+            //LoadFilesFromCLoud(List<double> RRList);
             Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
             FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create) ; // Create a new file
             downloader.Load("NormaltEKG_9.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv

@@ -26,6 +26,7 @@ using LiveCharts.Wpf;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using LogicLayer;
 
 namespace EKGApp
 {
@@ -37,10 +38,11 @@ namespace EKGApp
         public SeriesCollection MyCollection { get; set; }
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
+        List<double> RRDiff = new List<double>();
 
 
 
-        bool fileLoaded = false;
+        private bool fileLoaded = false;
         public Func<double, string> labelformatter { get; set; }
         public Func<double, string> labelformatter1 { get; set; }
 
@@ -107,39 +109,42 @@ namespace EKGApp
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-            if (fileLoaded== true)
-            {
-                RRList.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
-                for (int i = 0; i < EKGLine.Values.Count; i++)
-                {
-                    if ((double)EKGLine.Values[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
-                    {
-                        Rtak_new = i;
 
-                        diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
-                        RRList.Add(diff);
-                        Rtak_old = i;
-                        Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");
-                    }
-                    if ((double)EKGLine.Values[i] < threshold)
-                    {
-                        belowThreshold = true;
-                    }
-                    else
-                    {
-                        belowThreshold = false;
-                    }
-                }
-                RRList.RemoveAt(0);
-                Debug.WriteLine($"Pulses recorded: {RRList.Count}");
-                double Puls = 60 / RRList.Average();
-                Puls = Math.Round(Puls);
-                PulsTextBlock.Text = Puls.ToString(); 
-            }
-            else
-            {
-                PulsTextBlock.Text = "Please load an EKG";
-            }
+            
+            //if (fileLoaded== true)
+            //{
+            //    RRDiff.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
+                
+            //    for (int i = 0; i < RRList.Count; i++)
+            //    {
+            //        if ((double)RRList[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
+            //        {
+            //            Rtak_new = i;
+
+            //            diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
+            //            RRDiff.Add(diff);
+            //            Rtak_old = i;
+            //            Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");
+            //        }
+            //        if ((double)RRList[i] < threshold)
+            //        {
+            //            belowThreshold = true;
+            //        }
+            //        else
+            //        {
+            //            belowThreshold = false;
+            //        }
+            //    }
+            //    RRDiff.RemoveAt(0);
+            //    Debug.WriteLine($"Pulses recorded: {RRDiff.Count}");
+            //    double Puls = 60 / RRDiff.Average();
+            //    Puls = Math.Round(Puls);
+            //    PulsTextBlock.Text = Puls.ToString(); 
+            //}
+            //else
+            //{
+            //    PulsTextBlock.Text = "Please load an EKG";
+            //}
         }
 
         private void LoadFromFileButton_Click(object sender, RoutedEventArgs e)
@@ -205,9 +210,11 @@ namespace EKGApp
             Graf.AxisY[1].Separator.Step = 0.5;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            Histogram histogram = new Histogram(RRList);
+            Analyzer analyzer = new Analyzer(RRList);
+            bool STElevation = analyzer.DetectedSTElevation();
+            
 
         }
     }

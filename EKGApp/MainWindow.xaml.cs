@@ -52,11 +52,12 @@ namespace EKGApp
             labelformatter = x => (x / sample).ToString();
             labelformatter1 = x => (x.ToString("F1"));
             MyCollection = new SeriesCollection();
-            EKGLine = new LineSeries(); //Hej
+            EKGLine = new LineSeries();
             EKGLine.Values = new ChartValues<double> { };
             EKGLine.Fill = Brushes.Transparent;
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
+            
             DataContext = this;
         }
 
@@ -72,7 +73,7 @@ namespace EKGApp
             downloader.Load("NormaltEKG_9.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
             var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
-
+            var values = new List<object>();
             using (StreamReader reader = new StreamReader(stream2)) // Same procedure as last year? (Get data from the file)
             {
                 while (!reader.EndOfStream)
@@ -87,8 +88,7 @@ namespace EKGApp
 
                         if (splitLine.Length == 2)
                         {
-                            EKGLine.Values.Add(Double.Parse(doubleValues)); 
-                            RRList.Add(Double.Parse(doubleValues));
+                            values.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
@@ -98,8 +98,11 @@ namespace EKGApp
                     index++;
                 }
             }
+            EKGLine.Values.AddRange(values);
+            RRList.AddRange(values.Cast<double>());
             fileLoaded = true;
         }
+
         int Rtak_old = 0;
         int Rtak_new = 0;
         double sample = 500;

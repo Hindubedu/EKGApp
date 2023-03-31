@@ -8,14 +8,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="747" Width="1309" Loaded="Window_Loaded" Background="#FFF2EECB">
     <Grid Margin="0,34,166,142">
-        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="37,187,-152,-110">
+        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="37,187,-152,-110" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False">
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis ShowLabels="True" Labels="">
+                <lvc:Axis ShowLabels="True" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FFC5C2C2" StrokeThickness="1" IsHitTestVisible="False"/>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
-                <lvc:Axis ShowLabels="True" LabelFormatter="{Binding labelformatter}">
+                <lvc:Axis ShowLabels="True" LabelFormatter="{Binding labelformatter}" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FF9C9898" StrokeThickness="2" IsHitTestVisible="False"/>
                     </lvc:Axis.Separator>
@@ -23,12 +23,12 @@
             </lvc:CartesianChart.AxisX>
 
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Amplitude (mV)" ShowLabels="True" LabelFormatter="{Binding labelformatter1}">
+                <lvc:Axis Title="Amplitude (mV)" ShowLabels="True" LabelFormatter="{Binding labelformatter1}" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FFC5C2C2" IsEnabled="True" StrokeThickness="1"></lvc:Separator>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
-                <lvc:Axis ShowLabels="true" MinValue="-1" MaxValue="1.5" Labels="" >
+                <lvc:Axis ShowLabels="true" MinValue="-1" MaxValue="1.5" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FF9C9898" IsEnabled="True" StrokeThickness="2"></lvc:Separator>
                     </lvc:Axis.Separator>

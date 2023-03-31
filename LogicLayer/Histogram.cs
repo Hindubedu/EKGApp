@@ -40,14 +40,15 @@ namespace EKGApp
 
             //Finder den key i dictionary, der har den højeste værdi, den mest almindelige RR-værdi. Hvis x's værdi er større end y's værdi, så returnerer x, ellers returnerer y
            //evt. skal de tre værdier der er flest af tages gennemsnittet af og bruges til baseline
-            double baseline = RRDict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+            //double baseline = RRDict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
             //Returnerer baseline-værdien
-
-            return baseline;
             
 
+            // Tager alle values (ikke keys!) i RRDict, sorter fra højest til lavest, tager de 3 første og finder deres gennemsnit
+            double averaged_baseline = RRDict.Values.OrderByDescending(x => x).Take(3).Average();
             
+            return averaged_baseline;            
         }
     }
 }

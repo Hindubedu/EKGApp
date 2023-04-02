@@ -9,7 +9,7 @@ namespace LogicLayer
 {
     public class Analyzer
     {
-        private List<double> RRList  { get; set; }
+        private List<double> RRList { get; set; }
         public Analyzer(List<double> list)
         {
             RRList = list;

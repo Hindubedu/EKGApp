@@ -43,6 +43,5 @@
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
         <Image HorizontalAlignment="Left" Height="126" Margin="241,-18,0,0" VerticalAlignment="Top" Width="352" Source="/26006638_detail-removebg-preview.png"/>
         <Button x:Name="TestButton" Content="TestButton" HorizontalAlignment="Left" Margin="819,53,0,0" VerticalAlignment="Top" Click="TestButton_Click" Background="#FFE6CD98" BorderBrush="#FFEFB423" Height="55" Width="192"/>
-
     </Grid>
 </Window>

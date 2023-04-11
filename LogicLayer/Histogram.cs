@@ -1,54 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EKGApp
+﻿namespace EKGApp
 {
     public class Histogram
     {
+
+        /// <summary>
+        /// Opdeler data i bins af størrelsen 0,1 mV og returnerer det bin med flest observationer
+        /// </summary>
+        /// <param name="RRList">Listen af observationer</param>
+        /// <returns>Baseline (bin med flest observationer)</returns>
         public double FindBaseLine(List<double> RRList)
         {
-            //Opretter en tom dictionary til at gemme RRList værdier og hvor mange gange de optræder
-            Dictionary<double, int> RRDict = new Dictionary<double, int>();
-            
-            //Finder min og max værdier i RRList
-            double min = RRList.Min();
-            double max = RRList.Max();
-            
+            //Opretter en tom SortedDictionary til at gemme RRList værdier og hvor mange gange de optræder
+            SortedDictionary<double, int> RRDict = new();
+
             //Går gennem RRList og indsætter værdier i dictionary. Hvis samme værdi optræder flere gange optæller value
             foreach (double RR in RRList)
             {
+                // Afrund RR til nærmste 0.1 mV (nærmeste decimal)
+                double val = Math.Round(RR, 1);
 
                 //Hvis dictionary allerede indeholder RR som key, øger vi den værdi med 1
-
-                if (RRDict.ContainsKey(RR))
-                {
-                    RRDict[RR]++;
-
-                }
-                
                 //Ellers tilføjer vi RR som en ny nøgle med værdien 1
-
+                if (RRDict.ContainsKey(val))
+                {
+                    RRDict[val]++;
+                }
                 else
                 {
-                    RRDict.Add(RR, 1);
+                    RRDict.Add(val, 1);
                 }
             }
 
-            //Finder den key i dictionary, der har den højeste værdi, den mest almindelige RR-værdi. Hvis x's værdi er større end y's værdi, så returnerer x, ellers returnerer y
-           //evt. skal de tre værdier der er flest af tages gennemsnittet af og bruges til baseline
-            //double baseline = RRDict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-
-            //Returnerer baseline-værdien
-            
-
-            // Tager alle values (ikke keys!) i RRDict, sorter fra højest til lavest, tager de 3 første og finder deres gennemsnit
-            double averaged_baseline = RRDict.Values.OrderByDescending(x => x).Take(3).Average();
-            
-            return averaged_baseline;            
+            // Returner det bin med flest observationer
+            return RRDict.OrderByDescending(x => x.Value).First().Key;
         }
     }
 }

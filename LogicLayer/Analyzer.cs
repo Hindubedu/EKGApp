@@ -1,9 +1,4 @@
 ﻿using EKGApp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicLayer
 {
@@ -19,7 +14,9 @@ namespace LogicLayer
         {
             Histogram histogram = new Histogram();
             double baseline = histogram.FindBaseLine(RRList);
-            //Analyse for ST elevation
+            
+            // TODO Analyse for ST elevation
+            
             return false;
         }
     }

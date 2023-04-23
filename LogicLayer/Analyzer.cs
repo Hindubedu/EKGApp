@@ -60,9 +60,9 @@ namespace LogicLayer
                 double threshold = 0.5 + baseline;
                 rPeaks.RemoveAll(m => m.Y < threshold);
                 
-                // Udregn half_peak_width til 5% af målinger. Dette er halvdelen af et peaks bredde.
+                // Udregn half_peak_width til 0,5% af målinger. Dette er halvdelen af et peaks bredde.
                 // Dette bruges til at fjerne målinger omkring et peak, når det er fundet, så man ikke finder samme peak flere gange.
-                int half_peak_width = (int)(signal.Count * 0.01);
+                int half_peak_width = (int)(signal.Count * 0.005);
 
                 // Lav en tom liste, hvor vi gemmer funde peaks
                 List<Coordinates> foundRPeaks = new();
@@ -75,7 +75,7 @@ namespace LogicLayer
                     // Gem det på listen over fundne peaks
                     foundRPeaks.Add(peak);
                     // I listen over potentielle peaks, fjern X antal målinger (half_peak_width) til højre og venstre fra peaket 
-                    rPeaks.RemoveAll(p => p.X < peak.X - half_peak_width || p.X > peak.X + half_peak_width);
+                    rPeaks.RemoveAll(p => p.X < peak.X + half_peak_width && p.X > peak.X - half_peak_width);
                 }
 
                 return foundRPeaks;

@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,65 +26,75 @@ namespace LogicLayer
 
                 //Find R- og S-takker
                 PeakDetector peakDetector = new PeakDetector();
-                List<double> rPeaks = peakDetector.DetectRPeaks(RRList, baseline);
-
-                foreach(double rPeak in rPeaks)
-                {
-                    Console.WriteLine("rPeak: " + rPeak);
-                }
+                List<Coordinates> rPeaks = peakDetector.DetectRPeaks(RRList, baseline);
+                //List<double> sPeaks = peakDetector.DetectSPeaks(RRList, rPeaks);
 
                 return true;
             }
         }
 
+        public class Coordinates
+        {
+            public double X, Y;
+
+            public Coordinates(double X, double Y)
+            {
+                this.X = X;
+                this.Y = Y;
+            }
+        }
+        
         internal class PeakDetector
         {
-            public List<double> DetectRPeaks(List<double> signal, double baseline)
+            public List<Coordinates> DetectRPeaks(List<double> signal, double baseline)
             {
-                List<double> foundRPeaks = new List<double>();
 
-                // Algoritme til R-takker
-                // 1. Tag værdier fra signal hvor y-værdien er større end eller lig tærskel (0.5 mV over baseline som udgangspunkt)
-                // 2. Gem det højeste punkt på peakliste 
-                // 3. Fjern X målinger fra hver side af peak (X = 5% af antal målinger) 
-                // 4. Hvis signallisten har flere målinger, så gentag fra 2.
+                // Lav listen med målinger om til liste af koordinater (x = index/nr. måling, y=måling)
+                List<Coordinates> rPeaks = new();
+                for(int index = 0; index < signal.Count; index++)
+                {
+                    rPeaks.Add(new Coordinates(index, signal[index]));
+                }
 
-                // 1. Tag værdier fra signal hvor y-værdien er større end eller lig tærskel (0.5 mV over baseline som udgangspunkt)
+                // Fjern alle målinger, hvor målingen (y-aksen) er under tærskel (0,5 mV over baseline)
                 double threshold = 0.5 + baseline;
-                List<double> rPeaks = signal.Where(y => y >= threshold).ToList();
-
-                // Udregn half_peak_width til 5% af målinger 
+                rPeaks.RemoveAll(m => m.Y < threshold);
+                
+                // Udregn half_peak_width til 5% af målinger. Dette er halvdelen af et peaks bredde.
+                // Dette bruges til at fjerne målinger omkring et peak, når det er fundet, så man ikke finder samme peak flere gange.
                 int half_peak_width = (int)(signal.Count * 0.01);
 
-                // 4. Hvis der kan slettes en peaks bredde fra rPeaks (målinger over tærksel), så gentag fra 2.
+                // Lav en tom liste, hvor vi gemmer funde peaks
+                List<Coordinates> foundRPeaks = new();
+                
+                // Mens listen med potentielle peaks (alle målinger over tærskel) er større end 2 x halv peak bredde, gør følgende
                 while (rPeaks.Count > half_peak_width*2)
                 {
-                    // 2. Gem det højeste punkt på peakliste
-                    // Find højeste Y-værdi i  listen
-                    double peak = rPeaks.Max();
-                    // Gem peak i "fundet peaks" liste
+                    // Find det største peak 
+                    Coordinates peak = rPeaks.MaxBy(p => p.Y);
+                    // Gem det på listen over fundne peaks
                     foundRPeaks.Add(peak);
-
-                    // 3. Fjern halv peak bredde målinger fra hver side af peak (half_peak_width = 5% af antal målinger)
-                    // Find x-koordinat for peak
-                    int peakXCord = rPeaks.IndexOf(peak);
-                    // Fjern bredden af peak fra liste. Først højre, så venstre
-                    rPeaks.RemoveRange(peakXCord, half_peak_width);
-                    // Sletningen kan begynde før nul (altså i negative tal), så derfor bruger vi "Math.Clamp" til at indgrænse værdien til 0, hvis den er negativ.
-                    int deleteStart = Math.Clamp(peakXCord - half_peak_width, 0, int.MaxValue);
-                    rPeaks.RemoveRange(deleteStart, half_peak_width);
+                    // I listen over potentielle peaks, fjern X antal målinger (half_peak_width) til højre og venstre fra peaket 
+                    rPeaks.RemoveAll(p => p.X < peak.X - half_peak_width || p.X > peak.X + half_peak_width);
                 }
-              
+
                 return foundRPeaks;
             }
 
-            public List<int> DetectSPeaks(List<double> signal)
+            public List<double> DetectSPeaks(List<double> signal, List<(double, double)> rPeaks)
             {
-                List<int> sPeaks = new List<int>();
+                List<double> foundSPeaks = new List<double>();
 
-                //TODO Implementer logik for at finde S-takker i signalet
+                // Algoritme til s-takker 
+                // For hver R-peak: find den laveste y-værdi mellem r-peak og r-peak + half_peak_width    
+                
+                //foreach (double rPeak in rPeaks)
+                //{
+                //    //signal.GetRange(rPeaks)
+                //}
 
-                return sPeaks;
+
+                return foundSPeaks;
             }
         }
 

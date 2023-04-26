@@ -74,7 +74,7 @@ namespace EKGApp
             var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
             var values = new List<object>();
-            using (StreamReader reader = new StreamReader(stream2)) // Same procedure as last year? (Get data from the file)
+            using (StreamReader reader = new StreamReader(stream2)) // Get data from the file 
             {
                 while (!reader.EndOfStream)
                 {

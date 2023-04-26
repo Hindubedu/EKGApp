@@ -74,7 +74,7 @@ namespace EKGApp
             var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
             var values = new List<object>();
-            using (StreamReader reader = new StreamReader(stream2)) // Same procedure as last year? (Get data from the file)
+            using (StreamReader reader = new StreamReader(stream2)) // Get data from the file 
             {
                 while (!reader.EndOfStream)
                 {
@@ -113,29 +113,29 @@ namespace EKGApp
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
 
-            
-            //if (fileLoaded== true)
+
+            //if (fileLoaded == true) 
             //{
             //    RRDiff.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
-                
-            //    for (int i = 0; i < RRList.Count; i++)
+
+            //    for (int i = 0; i < RRList.Count; i++) 
             //    {
             //        if ((double)RRList[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
             //        {
-            //            Rtak_new = i;
+            //            Rtak_new = i; 
 
             //            diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
             //            RRDiff.Add(diff);
             //            Rtak_old = i;
-            //            Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");
+            //            Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");  
             //        }
             //        if ((double)RRList[i] < threshold)
             //        {
-            //            belowThreshold = true;
+            //            belowThreshold = true; 
             //        }
             //        else
             //        {
-            //            belowThreshold = false;
+            //            belowThreshold = false; 
             //        }
             //    }
             //    RRDiff.RemoveAt(0);
@@ -147,7 +147,8 @@ namespace EKGApp
             //else
             //{
             //    PulsTextBlock.Text = "Please load an EKG";
-            //}
+            //} 
+
         }
 
         private void LoadFromFileButton_Click(object sender, RoutedEventArgs e)
@@ -217,7 +218,10 @@ namespace EKGApp
         {
             Analyzer analyzer = new Analyzer(RRList);
             bool STElevation = analyzer.DetectedSTElevation();
-            
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
 
         }
 

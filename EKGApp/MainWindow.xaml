@@ -6,21 +6,27 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:EKGApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="747" Width="1309" Loaded="Window_Loaded" Background="#FFF2EECB">
-    <Grid Margin="0,34,166,142">
-        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="37,187,-152,-110" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False">
+        Title="MainWindow" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB">
+    <Grid Margin="10,35,166,11">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="93*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="85,201,-75,80" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False" Grid.ColumnSpan="2">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis ShowLabels="True" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FFC5C2C2" StrokeThickness="1" IsHitTestVisible="False"/>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
-                <lvc:Axis ShowLabels="True" LabelFormatter="{Binding labelformatter}" DisableAnimations="True">
+                <lvc:Axis Title="Tid (s)" ShowLabels="True" LabelFormatter="{Binding labelformatter}" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FF9C9898" StrokeThickness="2" IsHitTestVisible="False"/>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
+
+
 
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Amplitude (mV)" ShowLabels="True" LabelFormatter="{Binding labelformatter1}" DisableAnimations="True">

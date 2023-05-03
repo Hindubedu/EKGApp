@@ -157,7 +157,7 @@ namespace EKGApp
             RRList.Clear();
             int index = 0;
 
-            using (StreamReader reader = new StreamReader("Files/NormaltEKG.csv")) // Same procedure as every year...
+            using (StreamReader reader = new StreamReader("Files/STelevation0-6.csv")) // Same procedure as every year...
             {
                 while (!reader.EndOfStream)
                 {

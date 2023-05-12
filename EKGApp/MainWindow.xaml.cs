@@ -219,15 +219,5 @@ namespace EKGApp
             Analyzer analyzer = new Analyzer(RRList);
             bool STElevation = analyzer.DetectedSTElevation();
         }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
     }
 }

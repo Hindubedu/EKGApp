@@ -27,6 +27,8 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using LogicLayer;
+using Newtonsoft.Json.Linq;
+using static LogicLayer.Analyzer;
 
 namespace EKGApp
 {
@@ -39,6 +41,8 @@ namespace EKGApp
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
         List<double> RRDiff = new List<double>();
+        List<double> foundRPeaks = new List<double>();
+
 
 
 
@@ -110,8 +114,8 @@ namespace EKGApp
         double threshold = 0.6; //Set carefully
         bool belowThreshold = true;
 
-        private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
-        {
+        //private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
+        //{
 
 
             //if (fileLoaded == true) 
@@ -149,7 +153,7 @@ namespace EKGApp
             //    PulsTextBlock.Text = "Please load an EKG";
             //} 
 
-        }
+        //}
 
         private void LoadFromFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -172,6 +176,7 @@ namespace EKGApp
                         if (splitLine.Length == 2)
                         {
                             EKGLine.Values.Add(Double.Parse(doubleValues));
+                            RRList.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
@@ -214,20 +219,31 @@ namespace EKGApp
             Graf.AxisY[1].Separator.Step = 0.5;
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void Analysér_Click(object sender, RoutedEventArgs e)
         {
             Analyzer analyzer = new Analyzer(RRList);
-            bool STElevation = analyzer.DetectedSTElevation();
+            Analyzer analysér = new Analyzer(foundRPeaks);
+
+            var STElevation = analyzer.DetectedSTElevation();
+            STelevationTextBlock.Text = STElevation.ToString();
+            PulsTextBlock.Text = analyzer.ToString();
+            if (STElevation.Item1 == true)
+            {
+                {
+                    STelevationTextBlock.Text = "Der er tegn på ST-elevation";
+                }
+            }
+            else
+            {
+                STelevationTextBlock.Text = "ST-elevation er ikke detekteret";
+            }
+            PulsTextBlock.Text = STElevation.Item2.ToString();
+
+            
+
+            
+            
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
     }
 }

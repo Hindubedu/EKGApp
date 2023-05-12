@@ -6,13 +6,13 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:EKGApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB">
+        Title="MainWindow" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB" WindowState="Maximized">
     <Grid Margin="10,35,166,11">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="93*"/>
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
-        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="85,201,-75,80" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False" Grid.ColumnSpan="2">
+        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="252,335,-138,10" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False" Grid.ColumnSpan="2">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis ShowLabels="True" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
@@ -41,13 +41,14 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-        <Button Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="625,35,0,0" VerticalAlignment="Top" Click="LoadButton_Click" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="506,90,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="506,35,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="544,144,0,0" TextWrapping="Wrap" Text="Puls: " VerticalAlignment="Top" FontSize="18"/>
-        <Button x:Name="UploadButton" Content="Upload" HorizontalAlignment="Left" Margin="625,90,0,0" VerticalAlignment="Top" Click="UploadButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
+        <Button x:Name="LoadNewestButton" Content="Load Newest" HorizontalAlignment="Left" Margin="10,81,0,0" VerticalAlignment="Top" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Click="LoadNewestButton_Click"/>
+        <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
+        <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
+        <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="242,7,0,0" TextWrapping="Wrap" Text="Puls: " VerticalAlignment="Top" FontSize="18"/>
+        <Button x:Name="SaveToDBButton" Content="Save" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top" Click="UploadButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
-        <Image HorizontalAlignment="Left" Height="126" Margin="241,-18,0,0" VerticalAlignment="Top" Width="352" Source="/26006638_detail-removebg-preview.png"/>
-        <Button x:Name="TestButton" Content="TestButton" HorizontalAlignment="Left" Margin="819,53,0,0" VerticalAlignment="Top" Click="TestButton_Click" Background="#FFE6CD98" BorderBrush="#FFEFB423" Height="55" Width="192"/>
+        <ComboBox x:Name="EKGMeasurementCombobox" HorizontalAlignment="Left" Margin="10,333,0,0" VerticalAlignment="Top" Width="242" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
+        <Button x:Name="LoadFromCombobox" Content="LoadSelected" HorizontalAlignment="Left" Margin="10,293,0,0" VerticalAlignment="Top" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423" Click="LoadFromCombobox_Click"/>
+
     </Grid>
 </Window>

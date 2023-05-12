@@ -8,7 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FileShare\FileShare.csproj" />
+      <PackageReference Include="AU.ST2PRJ2.Fileshare" Version="1.0.3" />
     </ItemGroup>
 
+<!--    <ItemGroup>-->
+<!--      <ProjectReference Include="..\FileShare\FileShare.csproj" />-->
+<!--    </ItemGroup>-->
+    
 </Project>

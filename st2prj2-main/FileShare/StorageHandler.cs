@@ -20,9 +20,17 @@ internal class StorageHandler
     internal async Task<string> Upload(string filename, FileStream fs)
     {
         var filenameToUse = await FindNextLegalFileName(filename);
+        
         await _firebaseStorage.Child(_groupNum).Child(filenameToUse).PutAsync(fs)!;
+        var firebaseStorageReference = await _firebaseStorage.Child(_groupNum).Child(filenameToUse).GetMetaDataAsync();
         return filenameToUse;
     }
+
+    // internal async Task<List<string>> List()
+    // {
+    //     var firebaseMetaData = await _firebaseStorage.Child(_groupNum).GetMetaDataAsync();
+    //     _firebaseStorage.Child(_groupNum).
+    // }
 
    
     private async Task<string> FindNextLegalFileName(string filename)

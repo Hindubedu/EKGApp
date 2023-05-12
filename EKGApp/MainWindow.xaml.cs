@@ -39,6 +39,7 @@ namespace EKGApp
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
         List<double> RRDiff = new List<double>();
+        Loader loader = new Loader();
 
 
 
@@ -57,8 +58,12 @@ namespace EKGApp
             EKGLine.Fill = Brushes.Transparent;
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
-            
             DataContext = this;
+
+            loader.GetFileNames().ForEach(x => EKGMeasurementCombobox.Items.Add(x));
+
+
+           
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e) //Change
@@ -69,7 +74,7 @@ namespace EKGApp
             // To download (on PC)
             //LoadFilesFromCLoud(List<double> RRList);
             Downloader downloader = new Downloader("F23_Gruppe_02"); // Create a Downloader instance with group name F23_Gruppe_02
-            FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create) ; // Create a new file
+            FileStream newLocalStream = new FileStream("Files/pc_data3.csv", FileMode.Create); // Create a new file
             downloader.Load("NormaltEKG_9.csv", newLocalStream); // Get data from the file specified NormaltEKG_6.csv
             var stream2 = new FileStream("Files/pc_data3.csv", FileMode.Open); // Create a new file
 
@@ -79,7 +84,7 @@ namespace EKGApp
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    
+
                     if (index > 1)
                     {
                         var splitLine = line.Trim().Split(',');
@@ -112,43 +117,9 @@ namespace EKGApp
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-
-
-            //if (fileLoaded == true) 
-            //{
-            //    RRDiff.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
-
-            //    for (int i = 0; i < RRList.Count; i++) 
-            //    {
-            //        if ((double)RRList[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
-            //        {
-            //            Rtak_new = i; 
-
-            //            diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
-            //            RRDiff.Add(diff);
-            //            Rtak_old = i;
-            //            Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");  
-            //        }
-            //        if ((double)RRList[i] < threshold)
-            //        {
-            //            belowThreshold = true; 
-            //        }
-            //        else
-            //        {
-            //            belowThreshold = false; 
-            //        }
-            //    }
-            //    RRDiff.RemoveAt(0);
-            //    Debug.WriteLine($"Pulses recorded: {RRDiff.Count}");
-            //    double Puls = 60 / RRDiff.Average();
-            //    Puls = Math.Round(Puls);
-            //    PulsTextBlock.Text = Puls.ToString(); 
-            //}
-            //else
-            //{
-            //    PulsTextBlock.Text = "Please load an EKG";
-            //} 
-
+            Analyzer analyzer = new Analyzer(RRList);
+            bool STElevation = analyzer.DetectedSTElevation();
+            PulsTextBlock.Text = $"ST: Elevation: {STElevation}";
         }
 
         private void LoadFromFileButton_Click(object sender, RoutedEventArgs e)
@@ -187,10 +158,10 @@ namespace EKGApp
         private void UploadButton_Click(object sender, RoutedEventArgs e)
         {
             //To upload (on RaspBerry)
-            Uploader uploader = new Uploader("F23_Gruppe_02"); // Create an Uploader instance with a group name
-            FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
-            string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file
-            Debug.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
+            //Uploader uploader = new Uploader("F23_Gruppe_02"); // Create an Uploader instance with a group name
+            //FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
+            //string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file
+            //Debug.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -214,10 +185,36 @@ namespace EKGApp
             Graf.AxisY[1].Separator.Step = 0.5;
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void LoadFromCombobox_Click(object sender, RoutedEventArgs e)
         {
-            Analyzer analyzer = new Analyzer(RRList);
-            bool STElevation = analyzer.DetectedSTElevation();
+            string loadPath = EKGMeasurementCombobox.Text;
+            if (string.IsNullOrEmpty(loadPath))
+            {
+                MessageBox.Show($"Please select a measurement to load");
+            }
+            else
+            {
+                EKGLine.Values.Clear();
+                RRList.Clear();
+                
+                var values = loader.LoadChoiceFromCloud(loadPath);
+
+                EKGLine.Values.AddRange(values);
+                RRList.AddRange(values.Cast<double>());
+                fileLoaded = true;
+            }
+        }
+
+        private void LoadNewestButton_Click(object sender, RoutedEventArgs e)
+        {
+            EKGLine.Values.Clear();
+            RRList.Clear();
+
+            var values = loader.LoadNewestFromCloud();
+
+            EKGLine.Values.AddRange(values);
+            RRList.AddRange(values.Cast<double>());
+            fileLoaded = true;
         }
     }
 }

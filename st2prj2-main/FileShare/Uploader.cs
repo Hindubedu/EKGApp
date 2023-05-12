@@ -1,10 +1,8 @@
-using System.Diagnostics;
-using System.Reflection.Metadata;
 namespace FileShare;
 
 public class Uploader
 {
-    private StorageHandler handler;
+    private readonly StorageHandler handler;
 
     public Uploader(string groupNum)
     {
@@ -13,33 +11,31 @@ public class Uploader
 
     public string Save(string filename, FileStream @in)
     {
-        String Result = "";
+        String result = "";
+        // var task = handler.Upload(filename, @in);
+
         var task = handler.Upload(filename, @in);
-
-        try
+        Task.Run(() =>
         {
-            task.ContinueWith(t =>
+            try
             {
-                if (t.IsCompleted)
-                {
-                    Result = TaskEnd(t);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-        catch (Exception ex)
-        {
-            Result = TaskEnd(task);
-        }
-
-        return Result;
+                result = TaskEnd(task);
+            } 
+            catch (Exception)
+            {
+                result = TaskEnd(task);
+            }
+        }).Wait();
+        
+        return result;
     }
 
-    private String TaskEnd(object task)
+    private string TaskEnd(object task)
     {
-        var t = task as Task<String?>;
-        var content = t.Result;
+        var t = task as Task<string?>;
+        var content = t?.Result;
 
-        return (content == null ? "" : content);
+        return content ?? "";
     }
 
 }

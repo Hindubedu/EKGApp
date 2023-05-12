@@ -4,6 +4,16 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageId>AU.ST2PRJ2.Fileshare</PackageId>
+        <Version>1.0.3</Version>
+        <Authors>Henrik Kirk</Authors>
+        <Company>ECE</Company>
+        <PackageProjectUrl>https://gitlab.au.dk/au181645/st2prj2</PackageProjectUrl>
+        <RepositoryUrl>https://swwao.orbit.au.dk/nuget</RepositoryUrl>
+        <Description>
+            Should only be used by ST2PRJ2
+            .NET 6.0 release of a filesharing tool. This hides away all network details.
+        </Description>
     </PropertyGroup>
 
     <ItemGroup>

@@ -41,6 +41,8 @@ namespace EKGApp
         List<double> RRDiff = new List<double>();
         Loader loader = new Loader();
 
+        DBController dbController = new DBController();
+
 
 
         private bool fileLoaded = false;
@@ -59,11 +61,6 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
-
-            loader.GetFileNames().ForEach(x => EKGMeasurementCombobox.Items.Add(x));
-
-
-           
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e) //Change
@@ -215,6 +212,72 @@ namespace EKGApp
             EKGLine.Values.AddRange(values);
             RRList.AddRange(values.Cast<double>());
             fileLoaded = true;
+        }
+
+        private void CommentTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CommentTextBox.Text = "";
+        }
+
+        private void NameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            NameTextBox.Text = "";
+        }
+
+        private void CPRTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CPRTextBox.Text = "";
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton selectedRadioButton = (RadioButton)sender;
+
+            if (selectedRadioButton == DBRadioButton)
+            {
+                EKGMeasurementCombobox.Items.Clear();
+                DBSearchTextBox.Visibility=Visibility.Visible;
+                PatientComboBox.Visibility=Visibility.Visible;
+                EKGMeasurementCombobox.Visibility = Visibility.Hidden;
+                PatientComboBox.IsDropDownOpen=true;
+
+
+            }
+            else if (selectedRadioButton == CloudRadioButton)
+            {
+                EKGMeasurementCombobox.Items.Clear();
+                DBSearchTextBox.Visibility = Visibility.Hidden;
+                PatientComboBox.Visibility = Visibility.Hidden;
+                loader.GetFileNames().ForEach(x => EKGMeasurementCombobox.Items.Add(x));
+            }
+        }
+
+        private void DBSearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            DBSearchTextBox.Text = "";
+        }
+
+        private void SaveToDBButton_Click(object sender, RoutedEventArgs e)
+        {
+            dbController.SavePatientToDB();
+        }
+
+        private void DBSearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = DBSearchTextBox.Text;
+            List<string> dbSearchResults = dbController.SearchDBForPatients(searchText);
+            PatientComboBox.ItemsSource = dbSearchResults;
+        }
+
+        private void PatientComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PatientComboBox.SelectedItem != null)
+            {
+                string selectedResult = PatientComboBox.SelectedItem.ToString();
+                dbController.LoadPatientFromDB(selectedResult);
+                EKGMeasurementCombobox.Visibility = Visibility.Visible;
+                EKGMeasurementCombobox.ItemsSource = dbController.GetPatientJournals();
+            }
         }
     }
 }

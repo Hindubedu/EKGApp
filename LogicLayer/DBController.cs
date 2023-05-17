@@ -23,14 +23,16 @@ namespace LogicLayer
         public void SavePatientToDB(string firstname, string lastname,string cpr, string comment, List<double> RRlist)
         {
             using DBContextClass context = new DBContextClass();
-            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr, };
             Journal journal = new Journal { Comment = comment,Date=DateTime.Now };
+
 
             foreach (var item in RRlist)
             {
                 Measurement measurement = new Measurement { mV = item};
                 journal.Measurements.Add(measurement);
             }
+
+            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr};
 
             patient.Journals.Add(journal);
             context.Add(patient);

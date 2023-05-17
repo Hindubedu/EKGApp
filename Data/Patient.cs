@@ -13,6 +13,6 @@ namespace Data
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
 
-        public ICollection<Journal>? Journals { get; set; }
+        public ICollection<Journal> Journals { get; set; }= new List<Journal>();
     }
 }

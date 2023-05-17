@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,22 @@ namespace LogicLayer
 
         }
 
-        public void SavePatientToDB()
+        public void SavePatientToDB(string firstname, string lastname,string cpr, string comment, List<double> RRlist)
         {
+            using DBContextClass context = new DBContextClass();
+            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr, };
+            Journal journal = new Journal { Comment = comment,Date=DateTime.Now };
 
+            foreach (var item in RRlist)
+            {
+                Measurement measurement = new Measurement { mV = item};
+                journal.Measurements.Add(measurement);
+            }
+
+            patient.Journals.Add(journal);
+            context.Add(patient);
+
+            context.SaveChanges();
         }
 
         public void LoadPatientFromDB(string identifier)

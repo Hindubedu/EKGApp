@@ -49,16 +49,18 @@
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
         <ComboBox x:Name="EKGMeasurementCombobox" HorizontalAlignment="Left" Margin="10,384,0,0" VerticalAlignment="Top" Width="242" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <Button x:Name="LoadFromCombobox" Content="LoadSelected" HorizontalAlignment="Left" Margin="10,293,0,0" VerticalAlignment="Top" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423" Click="LoadFromCombobox_Click"/>
-        <TextBox x:Name="NameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="95,58,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120" GotFocus="NameTextBox_GotFocus"/>
+        <TextBox x:Name="FirstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="10,58,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120" GotFocus="NameTextBox_GotFocus"/>
         <TextBox x:Name="CPRTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="283,58,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="120" GotFocus="CPRTextBox_GotFocus"/>
         <TextBox x:Name="CommentTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="95,114,0,0" TextWrapping="Wrap" Text="Comments" VerticalAlignment="Top" Width="308" Height="39" GotFocus="CommentTextBox_GotFocus"/>
-        <Label x:Name="NameLabel" Grid.Column="1" Content="Name" HorizontalAlignment="Left" Margin="95,32,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="NameLabel" Grid.Column="1" Content="First Name" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="CPRLabel" Grid.Column="1" Content="CPR" HorizontalAlignment="Left" Margin="283,27,0,0" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="CommentLabel" Grid.Column="1" Content="Comments" HorizontalAlignment="Left" Margin="95,83,0,0" VerticalAlignment="Top" Width="120"/>
         <ComboBox x:Name="PatientComboBox" HorizontalAlignment="Left" Margin="10,357,0,0" VerticalAlignment="Top" Width="242"/>
         <TextBox x:Name="DBSearchTextBox" HorizontalAlignment="Left" Margin="10,335,0,0" TextWrapping="Wrap" Text="Search DB for CPR or Name" VerticalAlignment="Top" Width="237" Height="22" GotFocus="DBSearchTextBox_GotFocus" Visibility="Hidden" TextChanged="DBSearchTextBox_TextChanged"/>
         <RadioButton x:Name="CloudRadioButton" Content="Cloud" HorizontalAlignment="Left" Margin="131,299,0,0" VerticalAlignment="Top" IsChecked="True" Checked="RadioButton_Checked"/>
         <RadioButton x:Name="DBRadioButton" Content="DB" HorizontalAlignment="Left" Margin="131,314,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+        <TextBox x:Name="LastNameTextBox" Grid.Column="1" HorizontalAlignment="Center" Margin="0,58,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="LastNameLabel" Grid.Column="1" Content="Last Name" HorizontalAlignment="Left" Margin="155,27,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

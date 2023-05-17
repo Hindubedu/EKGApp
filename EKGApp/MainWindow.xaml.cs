@@ -221,7 +221,7 @@ namespace EKGApp
 
         private void NameTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            NameTextBox.Text = "";
+            FirstNameTextBox.Text = "";
         }
 
         private void CPRTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -259,7 +259,7 @@ namespace EKGApp
 
         private void SaveToDBButton_Click(object sender, RoutedEventArgs e)
         {
-            dbController.SavePatientToDB();
+            dbController.SavePatientToDB(FirstNameTextBox.Text,LastNameTextBox.Text,CPRTextBox.Text,CommentTextBox.Text,RRList);
         }
 
         private void DBSearchTextBox_TextChanged(object sender, TextChangedEventArgs e)

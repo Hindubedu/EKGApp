@@ -27,6 +27,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using LogicLayer;
+using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
+using Data;
 
 namespace EKGApp
 {
@@ -61,6 +64,7 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
+            EKGMeasurementCombobox.ItemsSource = loader.GetFileNames();
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e) //Change
@@ -139,6 +143,7 @@ namespace EKGApp
 
                         if (splitLine.Length == 2)
                         {
+                            RRList.Add(Double.Parse(doubleValues));
                             EKGLine.Values.Add(Double.Parse(doubleValues));
                         }
                         else
@@ -202,82 +207,145 @@ namespace EKGApp
             }
         }
 
-        private void LoadNewestButton_Click(object sender, RoutedEventArgs e)
+        private void LoadNewestButton_Click(object sender, RoutedEventArgs e) ///Loads the newest measurement from the cloud and shows it on the graf, also updates the EKGmeasurementscombobox
         {
             EKGLine.Values.Clear();
             RRList.Clear();
 
-            var values = loader.LoadNewestFromCloud();
+            var cloudfilenames = loader.GetFileNames();
+            EKGMeasurementCombobox.ItemsSource = cloudfilenames;
 
-            EKGLine.Values.AddRange(values);
-            RRList.AddRange(values.Cast<double>());
+            var newest = loader.LoadChoiceFromCloud(cloudfilenames.First());
+
+            EKGLine.Values.AddRange(newest);
+            RRList.AddRange(newest.Cast<double>());
             fileLoaded = true;
         }
 
-        private void CommentTextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void TextBox_ClearText(object sender, RoutedEventArgs e)
         {
-            CommentTextBox.Text = "";
-        }
-
-        private void NameTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            FirstNameTextBox.Text = "";
-        }
-
-        private void CPRTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            CPRTextBox.Text = "";
-        }
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            RadioButton selectedRadioButton = (RadioButton)sender;
-
-            if (selectedRadioButton == DBRadioButton)
+            if (sender is TextBox textBox)
             {
-                EKGMeasurementCombobox.Items.Clear();
-                DBSearchTextBox.Visibility=Visibility.Visible;
-                PatientComboBox.Visibility=Visibility.Visible;
-                EKGMeasurementCombobox.Visibility = Visibility.Hidden;
-                PatientComboBox.IsDropDownOpen=true;
-
-
+                if (textBox.Tag == null)
+                {
+                    textBox.Text = string.Empty;
+                    textBox.Tag = "Focused";
+                }
             }
-            else if (selectedRadioButton == CloudRadioButton)
-            {
-                EKGMeasurementCombobox.Items.Clear();
-                DBSearchTextBox.Visibility = Visibility.Hidden;
-                PatientComboBox.Visibility = Visibility.Hidden;
-                loader.GetFileNames().ForEach(x => EKGMeasurementCombobox.Items.Add(x));
-            }
-        }
-
-        private void DBSearchTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            DBSearchTextBox.Text = "";
         }
 
         private void SaveToDBButton_Click(object sender, RoutedEventArgs e)
         {
-            dbController.SavePatientToDB(FirstNameTextBox.Text,LastNameTextBox.Text,CPRTextBox.Text,CommentTextBox.Text,RRList);
-        }
-
-        private void DBSearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string searchText = DBSearchTextBox.Text;
-            List<string> dbSearchResults = dbController.SearchDBForPatients(searchText);
-            PatientComboBox.ItemsSource = dbSearchResults;
-        }
-
-        private void PatientComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (PatientComboBox.SelectedItem != null)
+            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
+            if (RRList.IsNullOrEmpty()==false && cleanedCPR.Length==10)
             {
-                string selectedResult = PatientComboBox.SelectedItem.ToString();
-                dbController.LoadPatientFromDB(selectedResult);
-                EKGMeasurementCombobox.Visibility = Visibility.Visible;
-                EKGMeasurementCombobox.ItemsSource = dbController.GetPatientJournals();
+                dbController.SavePatientToDB(FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
             }
+            else if(RRList.IsNullOrEmpty())
+            {
+                MessageBox.Show("Please Load a file to save");
+            }
+            else if (cleanedCPR.Length!=10)
+            {
+                MessageBox.Show("CPR must be in format: 0123456789");
+            }
+            else
+            {
+                MessageBox.Show("Something Went wrong");
+            }
+        }
+
+        private void NameTextBoxes_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex(@"\P{L}+"); // Should prohibit to any letter
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void CPRTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !e.Text.All(char.IsDigit);
+        }
+
+        private void SearchDBTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var patients = dbController.SearchDBForPatients(SearchDBTextBox.Text);
+
+            if (patients.Count>0)
+            {
+                SearchDBDropDownComboBox.ItemsSource=PatientNameAndCPR(patients);
+                SearchDBDropDownComboBox.IsDropDownOpen = true;
+            }
+        }
+
+        private List<ComboBoxItem> PatientNameAndCPR(List<Patient> patients)
+        {
+            var patientItems = patients.Select(patient =>
+            {
+                var item = new ComboBoxItem
+                {
+                    Content = $"{patient.FirstName} {patient.LastName} CPR: {patient.CPR}",
+                    Tag = patient.Id // Set the Tag property to the patient ID
+                };
+                return item;
+            });
+
+            return patientItems.ToList();
+        }
+
+        private List<ListBoxItem> SetJournalInfo(List<Journal> journals)
+        {
+            var journalItems = journals.Select(journal =>
+            {
+                var item = new ListBoxItem
+                {
+                    Content = $"Date: {journal.Date}",
+                    Tag = journal.Id
+                };
+                return item;
+            });
+            return journalItems.ToList();
+        }
+
+        private void SearchDBDropDownComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = (ComboBox)sender;
+            var selectedPatientItem = (ComboBoxItem)comboBox.SelectedItem;
+            var selectedPatientID = (int)selectedPatientItem.Tag;
+            var patient = dbController.LoadPatientFromDB(selectedPatientID);
+
+            UpdatePatientUIInfo(patient);
+            JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
+        }
+
+        private void UpdatePatientUIInfo(Patient patient)
+        {
+            FirstNameTextBox.Text = patient.FirstName;
+            LastNameTextBox.Text = patient.LastName;
+            CPRTextBox.Text = patient.CPR;
+        }
+
+        private void UpdateJournalUIInfo(Journal journal)
+        {
+            CommentTextBox.Text=journal.Comment;
+            RRList.Clear();
+            RRList.AddRange(journal.Measurements.Select(item => item.mV));
+            
+        }
+
+        private void JournalListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listbox = (ListBox)sender;
+            var selectedJournalItem = (ListBoxItem)listbox.SelectedItem;
+            var selectedJournalID = (int)selectedJournalItem.Tag;
+            var journal = dbController.LoadJournalFromDB(selectedJournalID);
+            UpdateJournalUIInfo(journal);
+            UpdateGraph();
+        }
+
+        private void UpdateGraph()
+        {
+            EKGLine.Values.Clear();
+            EKGLine.Values.AddRange(RRList.Select(value => (object)value));
         }
     }
 }

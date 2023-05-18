@@ -1,4 +1,5 @@
 ﻿using Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,29 +37,60 @@ namespace LogicLayer
 
             patient.Journals.Add(journal);
             context.Add(patient);
-
             context.SaveChanges();
         }
 
-        public void LoadPatientFromDB(string identifier)
+        public Patient LoadPatientFromDB(int identifier)
         {
+            using (var context = new DBContextClass())
+            {
+                var patient = context.Patients
+                    .Include(j => j.Journals)
+                        .ThenInclude(m => m.Measurements)
+                    .FirstOrDefault(p => p.Id == identifier);
 
+                return patient;
+            }
         }
 
-        public List<string> SearchDBForPatients(string searchText)
+        public List<Patient> SearchDBForPatients(string searchText)
         {
-            return null;
+            using DBContextClass context = new DBContextClass();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).ToList();
+            if (patients != null)
+            {
+                return patients;
+            }
+            else
+            {
+                return new List<Patient>();
+            }
         }
 
-        public List<string> GetPatientJournals()
+        public Journal LoadJournalFromDB(int identifier)
         {
-            List<string> journals = new List<string>();
-            return journals;
+            using (var context = new DBContextClass())
+            {
+                var journal = context.Journals
+                    .Include(m => m.Measurements)
+                    .FirstOrDefault(p => p.Id == identifier);
+
+                return journal;
+            }
         }
-        public List<double> LoadSelectedJournal(string identifier)
+
+        public List<Journal> GetPatientJournals(Patient patient)
         {
-            List<double> ekgmeasurement = new List<double>();
-            return ekgmeasurement;
+            using DBContextClass context = new DBContextClass();
+            var patientJournals = context.Journals.Where(j => j.PatientId == patient.Id).ToList();
+            return patientJournals;
+        }
+
+        public List<Measurement> GetJournalMeasuremens(Journal journal)
+        {
+            using DBContextClass context = new DBContextClass();
+            var journalMeasurements= context.Measurements.Where(m => m.JournalId == journal.Id).ToList();
+            return journalMeasurements;
         }
     }
 }

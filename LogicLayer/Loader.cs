@@ -10,17 +10,8 @@ namespace LogicLayer
     public class Loader
     {
         Downloader downloader = new Downloader("F23_Gruppe_02");
-
-
-
-        public List<object> LoadNewestFromCloud()
-        {
-           return LoadChoiceFromCloud(GetFileNames().First());
-        }
-
         public List<string> GetFileNames()
         {
-            List<string> downloadStrings = new List<string>();
             return downloader.GetFilenames();
         }
 

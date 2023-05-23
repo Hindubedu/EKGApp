@@ -42,11 +42,12 @@ namespace EKGApp
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
         List<double> RRDiff = new List<double>();
+        public string SaveString { get; set; } = "Save patient";
+        public string EditString { get; set; } = "Edit patient";
+
         Loader loader = new Loader();
-
         DBController dbController = new DBController();
-
-
+        double sample = 500;
 
         private bool fileLoaded = false;
         public Func<double, string> labelformatter { get; set; }
@@ -64,6 +65,11 @@ namespace EKGApp
             EKGLine.PointGeometry = null;
             MyCollection.Add(EKGLine);
             DataContext = this;
+            LoadInitialCloudFiles();
+        }
+
+        private void LoadInitialCloudFiles()
+        {
             EKGMeasurementCombobox.ItemsSource = loader.GetFileNames();
         }
 
@@ -108,13 +114,6 @@ namespace EKGApp
             RRList.AddRange(values.Cast<double>());
             fileLoaded = true;
         }
-
-        int Rtak_old = 0;
-        int Rtak_new = 0;
-        double sample = 500;
-        double diff;
-        double threshold = 0.6; //Set carefully
-        bool belowThreshold = true;
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
@@ -198,7 +197,7 @@ namespace EKGApp
             {
                 EKGLine.Values.Clear();
                 RRList.Clear();
-                
+
                 var values = loader.LoadChoiceFromCloud(loadPath);
 
                 EKGLine.Values.AddRange(values);
@@ -236,23 +235,7 @@ namespace EKGApp
 
         private void SaveToDBButton_Click(object sender, RoutedEventArgs e)
         {
-            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
-            if (RRList.IsNullOrEmpty()==false && cleanedCPR.Length==10)
-            {
-                dbController.SavePatientToDB(FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
-            }
-            else if(RRList.IsNullOrEmpty())
-            {
-                MessageBox.Show("Please Load a file to save");
-            }
-            else if (cleanedCPR.Length!=10)
-            {
-                MessageBox.Show("CPR must be in format: 0123456789");
-            }
-            else
-            {
-                MessageBox.Show("Something Went wrong");
-            }
+            SaveToDB();
         }
 
         private void NameTextBoxes_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -270,9 +253,9 @@ namespace EKGApp
         {
             var patients = dbController.SearchDBForPatients(SearchDBTextBox.Text);
 
-            if (patients.Count>0)
+            if (patients.Count > 0)
             {
-                SearchDBDropDownComboBox.ItemsSource=PatientNameAndCPR(patients);
+                SearchDBDropDownComboBox.ItemsSource = PatientNameAndCPR(patients);
                 SearchDBDropDownComboBox.IsDropDownOpen = true;
             }
         }
@@ -306,15 +289,27 @@ namespace EKGApp
             return journalItems.ToList();
         }
 
+        //Comment only enable if a journal is loaded
+        //Journals clear with the change of a patient so does the enable of comments
+        //Reset clears journals
+        //Journal selected enables comments
+
+
         private void SearchDBDropDownComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            EditPatientButton.Content = EditString;
+            CommentTextBox.IsEnabled=false;
             var comboBox = (ComboBox)sender;
             var selectedPatientItem = (ComboBoxItem)comboBox.SelectedItem;
-            var selectedPatientID = (int)selectedPatientItem.Tag;
-            var patient = dbController.LoadPatientFromDB(selectedPatientID);
+            if (selectedPatientItem != null)
+            {
+                var selectedPatientID = (int)selectedPatientItem.Tag;
+                var patient = dbController.LoadPatientFromDB(selectedPatientID);
 
-            UpdatePatientUIInfo(patient);
-            JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
+                UpdatePatientUIInfo(patient);
+                JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
+                HideSaveButton(true);
+            }
         }
 
         private void UpdatePatientUIInfo(Patient patient)
@@ -326,26 +321,166 @@ namespace EKGApp
 
         private void UpdateJournalUIInfo(Journal journal)
         {
-            CommentTextBox.Text=journal.Comment;
+            CommentTextBox.Text = journal.Comment;
             RRList.Clear();
             RRList.AddRange(journal.Measurements.Select(item => item.mV));
-            
+
         }
 
         private void JournalListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listbox = (ListBox)sender;
             var selectedJournalItem = (ListBoxItem)listbox.SelectedItem;
-            var selectedJournalID = (int)selectedJournalItem.Tag;
-            var journal = dbController.LoadJournalFromDB(selectedJournalID);
-            UpdateJournalUIInfo(journal);
-            UpdateGraph();
+            if (selectedJournalItem != null)
+            {
+                var selectedJournalID = (int)selectedJournalItem.Tag;
+                var journal = dbController.LoadJournalFromDB(selectedJournalID);
+                UpdateJournalUIInfo(journal);
+                UpdateGraph();
+                CommentTextBox.IsEnabled = true;
+            }
         }
 
         private void UpdateGraph()
         {
             EKGLine.Values.Clear();
             EKGLine.Values.AddRange(RRList.Select(value => (object)value));
+        }
+
+        private void ResetUIButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResetUI();
+        }
+
+        private async void ShowMessage(string message)
+        {
+            MessageTextBox.Text = message;
+
+            await Task.Delay(3000);
+
+            MessageTextBox.Text = "";
+        }
+
+        private void EditPatientButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (EditPatientButton.Content.ToString().Trim() == EditString)
+            {
+                FirstNameTextBox.IsEnabled = true;
+                LastNameTextBox.IsEnabled = true;
+                CPRTextBox.IsEnabled = true;
+                EditPatientButton.Content = SaveString;
+            }
+            else if (EditPatientButton.Content.ToString() == SaveString)
+            {
+                EditPatientInDB();
+            }
+        }
+
+        private void HideSaveButton(bool hideSaveButton) /// Method to switch 
+        {
+            if (hideSaveButton == true)
+            {
+                SaveToDBButton.IsEnabled = false;
+                SaveToDBButton.Visibility = Visibility.Hidden;
+                EditPatientButton.IsEnabled = true;
+                EditPatientButton.Visibility = Visibility.Visible;
+
+                FirstNameTextBox.IsEnabled = false;
+                LastNameTextBox.IsEnabled = false;
+                CPRTextBox.IsEnabled = false;
+                CommentTextBox.IsEnabled = false;
+            }
+            else
+            {
+                SaveToDBButton.IsEnabled = true;
+                SaveToDBButton.Visibility = Visibility.Visible;
+                EditPatientButton.IsEnabled = false;
+                EditPatientButton.Visibility = Visibility.Hidden;
+                EditPatientButton.Content = SaveString;
+
+                FirstNameTextBox.IsEnabled = true;
+                LastNameTextBox.IsEnabled = true;
+                CPRTextBox.IsEnabled = true;
+                CommentTextBox.IsEnabled = true;
+            }
+        }
+
+        private void SaveToDB()
+        {
+            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
+            if (IsUserInputCorrect(cleanedCPR))
+            {
+                bool isSaved = dbController.SavePatientToDB(FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
+                if (isSaved == true)
+                {
+                    ShowMessage("Patient saved...");
+                    HideSaveButton(false);
+                }
+                else
+                {
+                    ShowMessage("Patient bot saved...");
+                }
+            }
+            
+        }
+
+        private void EditPatientInDB()
+        {
+            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
+            bool isSaved = false;
+            if (IsUserInputCorrect(cleanedCPR))
+            {
+               isSaved = dbController.EditPatient(FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
+
+            }
+            if (isSaved)
+            {
+                ResetUI();
+                ShowMessage("Changes Saved");
+            }
+            else
+            {
+                ShowMessage("Cannot find patient");
+            }
+
+        }
+
+        private bool IsUserInputCorrect(string cleanCPR)
+        {
+
+            if (cleanCPR.Length == 10) //EditPatientButton.Content
+            {
+                return true;
+            }
+            else if (RRList.IsNullOrEmpty())
+            {
+                ShowMessage("Please Load a file to save");
+                return false;
+            }
+            else if (cleanCPR.Length != 10)
+            {
+                ShowMessage("CPR must be 10 digits");
+                return false;
+            }
+            else
+            {
+                ShowMessage("Something Went wrong");
+                return false;
+            }
+        }
+        private void ResetUI()
+        {
+            FirstNameTextBox.Clear();
+            LastNameTextBox.Clear();
+            CPRTextBox.Clear();
+            CommentTextBox.Clear();
+            RRList.Clear();
+            EKGLine.Values.Clear();
+            LoadInitialCloudFiles();
+            SearchDBTextBox.Text = "";
+            SearchDBDropDownComboBox.ItemsSource = null;
+            HideSaveButton(false);
+            EditPatientButton.Content = EditString;
         }
     }
 }

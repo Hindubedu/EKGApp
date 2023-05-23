@@ -2,42 +2,53 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LogicLayer
 {
     public class DBController
     {
         public List<List<double>> RRList { get; set; }
-        public string Name { get; set; }
-        public string CPR { get; set; }
-        public string Comment { get; set; }
-        public DateTime Date { get; set; }
+        public Patient currentPatient { get; set; }
+        public int currentJournalId { get; set; }
 
         public DBController()
         {
 
         }
 
-        public void SavePatientToDB(string firstname, string lastname,string cpr, string comment, List<double> RRlist)
+        public bool SavePatientToDB(string firstname, string lastname, string cpr, string comment, List<double> RRlist)
         {
             using DBContextClass context = new DBContextClass();
-            Journal journal = new Journal { Comment = comment,Date=DateTime.Now };
-
-
-            foreach (var item in RRlist)
+            if (currentPatient == null)
             {
-                Measurement measurement = new Measurement { mV = item};
-                journal.Measurements.Add(measurement);
+
+
+                Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
+
+
+                foreach (var item in RRlist)
+                {
+                    Measurement measurement = new Measurement { mV = item };
+                    journal.Measurements.Add(measurement);
+                }
+
+                Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr };
+
+                patient.Journals.Add(journal);
+                context.Add(patient);
+                context.SaveChanges();
+                return true;
             }
-
-            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr};
-
-            patient.Journals.Add(journal);
-            context.Add(patient);
-            context.SaveChanges();
+            else
+            {
+                return false;
+            }
         }
 
         public Patient LoadPatientFromDB(int identifier)
@@ -48,7 +59,7 @@ namespace LogicLayer
                     .Include(j => j.Journals)
                         .ThenInclude(m => m.Measurements)
                     .FirstOrDefault(p => p.Id == identifier);
-
+                currentPatient = patient;
                 return patient;
             }
         }
@@ -72,25 +83,66 @@ namespace LogicLayer
             using (var context = new DBContextClass())
             {
                 var journal = context.Journals
-                    .Include(m => m.Measurements)
-                    .FirstOrDefault(p => p.Id == identifier);
-
+                        .Include(m => m.Measurements)
+                        .FirstOrDefault(p => p.Id == identifier);
+                currentJournalId = journal.Id;
                 return journal;
             }
         }
-
-        public List<Journal> GetPatientJournals(Patient patient)
+        public bool EditPatient(string firstname, string lastname, string cpr, string comment, List<double> RRlist)
         {
             using DBContextClass context = new DBContextClass();
-            var patientJournals = context.Journals.Where(j => j.PatientId == patient.Id).ToList();
-            return patientJournals;
+            {
+                var existingPatient = context.Patients
+                .Include(p => p.Journals)
+                .ThenInclude(j => j.Measurements)
+                .FirstOrDefault(p => p.Id == currentPatient.Id);
+
+                if (existingPatient != null)
+                {
+                    existingPatient.FirstName = firstname;
+                    existingPatient.LastName = lastname;
+                    existingPatient.CPR = cpr;
+
+                    var existingJournal = existingPatient.Journals.FirstOrDefault(j => j.Id == currentJournalId);
+
+                    if (existingJournal != null)
+                    {
+                        existingJournal.Comment = comment;
+                        existingJournal.Measurements.Clear();
+                        foreach (var item in RRlist)
+                        {
+                            Measurement m = new Measurement();
+                            m.mV = item;
+                            existingJournal.Measurements.Add(m);
+                        }
+
+                    }
+                    context.SaveChanges();
+                    currentPatient = null;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
-        public List<Measurement> GetJournalMeasuremens(Journal journal)
-        {
-            using DBContextClass context = new DBContextClass();
-            var journalMeasurements= context.Measurements.Where(m => m.JournalId == journal.Id).ToList();
-            return journalMeasurements;
-        }
+        //Helper methods from before i discovered include
+
+        //public List<Journal> GetPatientJournals(Patient patient)
+        //{
+        //    using DBContextClass context = new DBContextClass();
+        //    var patientJournals = context.Journals.Where(j => j.PatientId == patient.Id).ToList();
+        //    return patientJournals;
+        //}
+
+        //public List<Measurement> GetJournalMeasuremens(Journal journal)
+        //{
+        //    using DBContextClass context = new DBContextClass();
+        //    var journalMeasurements= context.Measurements.Where(m => m.JournalId == journal.Id).ToList();
+        //    return journalMeasurements;
+        //}
     }
 }

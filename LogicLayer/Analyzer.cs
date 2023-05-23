@@ -11,7 +11,7 @@ namespace LogicLayer
             RRList = list;
         }
 
-        public bool DetectedSTElevation()
+        public Tuple<bool,int> DetectedSTElevation()
         {
             // Find baseline
             Histogram histogram = new Histogram();
@@ -32,10 +32,19 @@ namespace LogicLayer
             //Find R- og S-takker
             PeakDetector peakDetector = new PeakDetector();
             List<Coordinates> rPeaks = peakDetector.DetectRPeaks(signal, baseline, half_peak_width);
+            int puls = rPeaks.Count; // Beregner puls ud fra antallet af fundne r-peaks
             List<Coordinates> sPeaks = peakDetector.DetectSPeaks(signal, rPeaks, half_peak_width);
 
-            // TODO returner true, hvis st-elevation er til stede.
-            return true;
+            var st = sPeaks.Where(peak => peak.Y > 0.1 + baseline).ToList(); // Finder alle s-peaks, der er mere end 0,1 mV over baseline
+            bool stbool = false;
+            if (st.Count > 0)
+            {
+                stbool = true;
+            }
+
+            // Returner true, hvis st-elevation er til stede.
+            Tuple<bool, int> result = new Tuple<bool, int>(stbool, puls);
+            return result;
         }
 
         public class Coordinates
@@ -85,7 +94,7 @@ namespace LogicLayer
 
                 foreach (Coordinates rPeak in rPeaks)
                 {
-                    // FInd det laveste punkt mellem r-peak og r-peak + halvdelen af peak-bredde på signalet (y-aksen)
+                    // Find det laveste punkt mellem r-peak og r-peak + halvdelen af peak-bredde på signalet (y-aksen)
                     Coordinates sPeak = signal.Where(m => m.X > rPeak.X && m.X < rPeak.X + half_peak_width).MinBy(c => c.Y);
                     // Tilføj fundet s-peak til listen af fundne s-peaks
                     foundSPeaks.Add(sPeak);

@@ -7,12 +7,12 @@
         xmlns:local="clr-namespace:EKGApp"
         mc:Ignorable="d"
         Title="EKG-måler" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB">
-    <Grid Margin="10,35,166,11">
+    <Grid Margin="10,35,31,11">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="93*"/>
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
-        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="85,201,-75,80" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False" Grid.ColumnSpan="2">
+        <lvc:CartesianChart Name="Graf" Series="{Binding Path=MyCollection}" Grid.Row="0" Margin="10,201,0,80" DataTooltip="{x:Null}" DisableAnimations="True" Hoverable="False" Grid.ColumnSpan="2">
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis ShowLabels="True" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
@@ -44,11 +44,11 @@
         <Button Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="625,35,0,0" VerticalAlignment="Top" Click="LoadButton_Click" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" FontFamily="Perpetua Titling MT"/>
         <!--<Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="506,90,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>-->
         <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="506,35,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423" FontFamily="Perpetua Titling MT"/>
-        <TextBlock x:Name="STelevationTextBlock" HorizontalAlignment="Left" Margin="22,41,0,0" TextWrapping="Wrap" Text="ST-elevation" VerticalAlignment="Top" FontSize="18" RenderTransformOrigin="3.935,-4.447" Grid.Column="1" FontFamily="Perpetua Titling MT"/>
+        <TextBlock x:Name="STelevationTextBlock" HorizontalAlignment="Left" Margin="775,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="30" RenderTransformOrigin="3.935,-4.447" FontFamily="Perpetua Titling MT" Width="573" Grid.ColumnSpan="2"/>
         <Button x:Name="UploadButton" Content="Upload" HorizontalAlignment="Left" Margin="625,90,0,0" VerticalAlignment="Top" Click="UploadButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" FontFamily="Perpetua Titling MT"/>
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
         <Image HorizontalAlignment="Left" Height="126" Margin="241,-18,0,0" VerticalAlignment="Top" Width="352" Source="/26006638_detail-removebg-preview.png"/>
         <Button x:Name="Analysér" Content="Analysér" HorizontalAlignment="Left" Margin="506,90,0,0" VerticalAlignment="Top" Click="Analysér_Click" Background="#FFE6CD98" BorderBrush="#FFEFB423" Height="33" Width="98" FontFamily="Perpetua Titling MT"/>
-        <TextBox x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="22,97,0,0" TextWrapping="Wrap" Text="Puls" VerticalAlignment="Top" Width="133" FontSize="50" Background="{x:Null}" BorderBrush="{x:Null}" Grid.Column="1" FontFamily="Perpetua Titling MT"/>
+        <TextBox x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="775,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" FontSize="48" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Perpetua Titling MT" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

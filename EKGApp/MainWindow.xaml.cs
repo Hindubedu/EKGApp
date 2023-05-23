@@ -114,54 +114,13 @@ namespace EKGApp
         double threshold = 0.6; //Set carefully
         bool belowThreshold = true;
 
-        //private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
-        //{
-
-
-            //if (fileLoaded == true) 
-            //{
-            //    RRDiff.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
-
-            //    for (int i = 0; i < RRList.Count; i++) 
-            //    {
-            //        if ((double)RRList[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
-            //        {
-            //            Rtak_new = i; 
-
-            //            diff = (Rtak_new - Rtak_old) * 1/sample; //samplerate 0.002 samples /s
-            //            RRDiff.Add(diff);
-            //            Rtak_old = i;
-            //            Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");  
-            //        }
-            //        if ((double)RRList[i] < threshold)
-            //        {
-            //            belowThreshold = true; 
-            //        }
-            //        else
-            //        {
-            //            belowThreshold = false; 
-            //        }
-            //    }
-            //    RRDiff.RemoveAt(0);
-            //    Debug.WriteLine($"Pulses recorded: {RRDiff.Count}");
-            //    double Puls = 60 / RRDiff.Average();
-            //    Puls = Math.Round(Puls);
-            //    PulsTextBlock.Text = Puls.ToString(); 
-            //}
-            //else
-            //{
-            //    PulsTextBlock.Text = "Please load an EKG";
-            //} 
-
-        //}
-
         private void LoadFromFileButton_Click(object sender, RoutedEventArgs e)
         {
             EKGLine.Values.Clear();
             RRList.Clear();
             int index = 0;
 
-            using (StreamReader reader = new StreamReader("Files/STelevation0-6.csv")) // Same procedure as every year...
+            using (StreamReader reader = new StreamReader("Files/NormaltEKG.csv")) // Same procedure as every year...
             {
                 while (!reader.EndOfStream)
                 {
@@ -203,8 +162,8 @@ namespace EKGApp
 
             Graf.AxisX[0].MinValue = 0;
             Graf.AxisX[1].MinValue = 0;
-            Graf.AxisX[0].MaxValue = sample;
-            Graf.AxisX[1].MaxValue = sample;
+            Graf.AxisX[0].MaxValue = 3 * sample;
+            Graf.AxisX[1].MaxValue = 3 * sample;
 
             Graf.AxisX[0].Separator.Step = 0.04 / (1 / sample);
             Graf.AxisX[1].Separator.Step = 0.2 / (1 / sample);
@@ -213,8 +172,8 @@ namespace EKGApp
             Graf.AxisY[1].MinValue = -1;
             //Skal indstilles til 1.5 mV, eller hvad der cirka passer. Skal justeres og tilpasses senere 
             //når vi har målinger vi kan teste på
-            Graf.AxisY[0].MaxValue = 1.5;
-            Graf.AxisY[1].MaxValue = 1.5;
+            Graf.AxisY[0].MaxValue = 2.5;
+            Graf.AxisY[1].MaxValue = 2.5;
             Graf.AxisY[0].Separator.Step = 0.1;
             Graf.AxisY[1].Separator.Step = 0.5;
         }
@@ -226,7 +185,7 @@ namespace EKGApp
 
             var STElevation = analyzer.DetectedSTElevation();
             STelevationTextBlock.Text = STElevation.ToString();
-            PulsTextBlock.Text = analyzer.ToString();
+            
             if (STElevation.Item1 == true)
             {
                 {
@@ -237,11 +196,41 @@ namespace EKGApp
             {
                 STelevationTextBlock.Text = "ST-elevation er ikke detekteret";
             }
-            PulsTextBlock.Text = STElevation.Item2.ToString();
 
-            
+            if (fileLoaded == true)
+            {
+                RRDiff.Clear(); //Important otherwise your list is accumulative with each click and the time diff from one reading to next will do funky things.
 
-            
+                for (int i = 0; i < RRList.Count; i++)
+                {
+                    if ((double)RRList[i] > threshold && belowThreshold == true) //Obs Important to choose correct threshold otherwise with i.e. 1000 only the point triggering threshold will be recorded and hence skip a peak.
+                    {
+                        Rtak_new = i;
+
+                        diff = (Rtak_new - Rtak_old) * 1 / sample; //samplerate 0.002 samples /s
+                        RRDiff.Add(diff);
+                        Rtak_old = i;
+                        Debug.WriteLine($"Current line: {i}, Value: {EKGLine.Values[i].ToString()} Diff: {diff}");
+                    }
+                    if ((double)RRList[i] < threshold)
+                    {
+                        belowThreshold = true;
+                    }
+                    else
+                    {
+                        belowThreshold = false;
+                    }
+                }
+                RRDiff.RemoveAt(0);
+                Debug.WriteLine($"Pulses recorded: {RRDiff.Count}");
+                double Puls = 60 / RRDiff.Average();
+                Puls = Math.Round(Puls);
+                PulsTextBlock.Text = Puls.ToString();
+            }
+            else
+            {
+                PulsTextBlock.Text = "Indlæs et EKG";
+            }
             
         }
 

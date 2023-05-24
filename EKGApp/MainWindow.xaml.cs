@@ -119,7 +119,7 @@ namespace EKGApp
                 return;
             }
             Analyzer analyzer = new Analyzer(RRList);
-            bool STElevation = analyzer.DetectedSTElevation();
+            var STElevation = analyzer.DetectedSTElevation();
             PulsTextBlock.Text = $"ST: Elevation: {STElevation}";
         }
 

@@ -6,7 +6,7 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:EKGApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB" WindowState="Maximized">
+        Title="ECGApp" Height="956" Width="1409" Loaded="Window_Loaded" Background="#FFF2EECB" WindowState="Maximized">
     <Grid Margin="10,35,166,11">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="93*"/>

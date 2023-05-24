@@ -2,7 +2,6 @@
 {
     public class Histogram
     {
-
         /// <summary>
         /// Opdeler data i bins af størrelsen 0,1 mV og returnerer det bin med flest observationer
         /// </summary>
@@ -30,7 +29,6 @@
                     RRDict.Add(val, 1);
                 }
             }
-
             // Returner det bin med flest observationer
             return RRDict.OrderByDescending(x => x.Value).First().Key;
         }

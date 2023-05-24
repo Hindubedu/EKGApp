@@ -12,7 +12,6 @@ namespace LogicLayer
 
             Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
 
-
             foreach (var item in RRlist)
             {
                 Measurement measurement = new Measurement { mV = item };
@@ -112,7 +111,6 @@ namespace LogicLayer
 
                     patient.Journals.Clear();
                 }
-
                 // Remove all patients from the database
                 context.Patients.RemoveRange(allPatients);
 
@@ -140,7 +138,6 @@ namespace LogicLayer
 
     public static class FakeDataGenerator
     {
-
         public static void CreateBogusDB()
         {
             var patients = GeneratePeople();

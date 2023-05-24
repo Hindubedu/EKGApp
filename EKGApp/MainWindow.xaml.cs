@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using Data;
 using Microsoft.VisualBasic;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using static LogicLayer.Analyzer;
 
 namespace EKGApp
 {
@@ -37,6 +39,8 @@ namespace EKGApp
         Loader loader = new Loader();
         DBController dbController = new DBController();
         double sample = 500;
+
+
 
         private bool fileLoaded = false;
         public Func<double, string> labelformatter { get; set; }
@@ -141,6 +145,7 @@ namespace EKGApp
                         {
                             RRList.Add(Double.Parse(doubleValues));
                             EKGLine.Values.Add(Double.Parse(doubleValues));
+                            RRList.Add(Double.Parse(doubleValues));
                         }
                         else
                         {
@@ -167,8 +172,8 @@ namespace EKGApp
 
             Graf.AxisX[0].MinValue = 0;
             Graf.AxisX[1].MinValue = 0;
-            Graf.AxisX[0].MaxValue = sample;
-            Graf.AxisX[1].MaxValue = sample;
+            Graf.AxisX[0].MaxValue = 3 * sample;
+            Graf.AxisX[1].MaxValue = 3 * sample;
 
             Graf.AxisX[0].Separator.Step = 0.04 / (1 / sample);
             Graf.AxisX[1].Separator.Step = 0.2 / (1 / sample);
@@ -509,6 +514,5 @@ namespace EKGApp
                 ShowMessage("Please choose a patient or new EKG");
             }
         }
-        //If currentpatient !=null
     }
 }

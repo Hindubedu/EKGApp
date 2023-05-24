@@ -1,5 +1,4 @@
 ﻿using EKGApp;
-using System.Diagnostics.Metrics;
 
 namespace LogicLayer
 {

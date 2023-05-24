@@ -1,31 +1,16 @@
 ﻿using FileShare;
-using global::RPI;
-using global::RPI.Controller;
-using global::RPI.Display;
-using global::RPI.Heart_Rate_Monitor;
-using global::RPI.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Diagnostics;
-using System.Reflection;
-using System.Threading;
 using LogicLayer;
 using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
@@ -66,6 +51,7 @@ namespace EKGApp
             MyCollection.Add(EKGLine);
             DataContext = this;
             LoadInitialCloudFiles();
+            //dbController.CreateBogusDB();
         }
 
         private void LoadInitialCloudFiles()
@@ -204,6 +190,7 @@ namespace EKGApp
                 RRList.AddRange(values.Cast<double>());
                 fileLoaded = true;
             }
+            dbController.currentJournalId = 0;
         }
 
         private void LoadNewestButton_Click(object sender, RoutedEventArgs e) ///Loads the newest measurement from the cloud and shows it on the graf, also updates the EKGmeasurementscombobox
@@ -368,6 +355,8 @@ namespace EKGApp
                 FirstNameTextBox.IsEnabled = true;
                 LastNameTextBox.IsEnabled = true;
                 CPRTextBox.IsEnabled = true;
+                AddJournalButton.IsEnabled = true;
+                CommentTextBox.IsEnabled =true;
                 EditPatientButton.Content = SaveString;
             }
             else if (EditPatientButton.Content.ToString() == SaveString)
@@ -389,6 +378,7 @@ namespace EKGApp
                 LastNameTextBox.IsEnabled = false;
                 CPRTextBox.IsEnabled = false;
                 CommentTextBox.IsEnabled = false;
+                AddJournalButton.IsEnabled = false;
             }
             else
             {
@@ -481,6 +471,27 @@ namespace EKGApp
             SearchDBDropDownComboBox.ItemsSource = null;
             HideSaveButton(false);
             EditPatientButton.Content = EditString;
+            AddJournalButton.IsEnabled = false;
+            dbController.currentJournalId = 0;
+            dbController.currentPatient = null;
         }
+
+        private void AddJournalButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (dbController.currentPatient != null && RRList.Count > 0 && dbController.currentJournalId==0)
+            {
+                CommentTextBox.IsEnabled = true;
+                CommentTextBox.Text = "";
+                dbController.SaveJournalToPatient(CommentTextBox.Text,RRList);
+                ShowMessage("Journal Saved");
+                AddJournalButton.IsEnabled = false;
+                EditPatientButton.Content = EditString;
+            }
+            else
+            {
+                ShowMessage("Please choose a patient or new EKG");
+            }
+        }
+        //If currentpatient !=null
     }
 }

@@ -26,15 +26,13 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
 
-
-
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis Title="Amplitude (mV)" ShowLabels="True" LabelFormatter="{Binding labelformatter1}" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FFC5C2C2" IsEnabled="True" StrokeThickness="1"></lvc:Separator>
                     </lvc:Axis.Separator>
                 </lvc:Axis>
-                <lvc:Axis ShowLabels="true" MinValue="-1" MaxValue="1.5" Labels="" DisableAnimations="True">
+                <lvc:Axis ShowLabels="true" MinValue="-0.5" MaxValue="2" Labels="" DisableAnimations="True">
                     <lvc:Axis.Separator>
                         <lvc:Separator Stroke="#FF9C9898" IsEnabled="True" StrokeThickness="2"></lvc:Separator>
                     </lvc:Axis.Separator>
@@ -63,6 +61,7 @@
         <Button x:Name="ResetUIButton" Content="Reset" HorizontalAlignment="Left" Margin="165,153,0,0" VerticalAlignment="Top" Click="ResetUIButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="523,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" Width="144"/>
         <Button x:Name="EditPatientButton" Content="Edit patient" HorizontalAlignment="Left" Margin="100,174,0,0" VerticalAlignment="Top" Click="EditPatientButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Visibility="Hidden" IsEnabled="False"/>
+        <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="762,174,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.ColumnSpan="2" IsEnabled="False"/>
 
     </Grid>
 </Window>

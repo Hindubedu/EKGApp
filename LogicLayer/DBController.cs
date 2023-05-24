@@ -1,13 +1,6 @@
-﻿using Data;
+﻿using Bogus;
+using Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LogicLayer
 {
@@ -27,8 +20,6 @@ namespace LogicLayer
             using DBContextClass context = new DBContextClass();
             if (currentPatient == null)
             {
-
-
                 Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
 
 
@@ -120,6 +111,7 @@ namespace LogicLayer
                     }
                     context.SaveChanges();
                     currentPatient = null;
+                    currentJournalId = 0;
                     return true;
                 }
                 else
@@ -129,20 +121,81 @@ namespace LogicLayer
             }
         }
 
-        //Helper methods from before i discovered include
+        public void ClearAllPatients()
+        {
+            using (DBContextClass context = new DBContextClass())
+            {
 
-        //public List<Journal> GetPatientJournals(Patient patient)
-        //{
-        //    using DBContextClass context = new DBContextClass();
-        //    var patientJournals = context.Journals.Where(j => j.PatientId == patient.Id).ToList();
-        //    return patientJournals;
-        //}
+                var allPatients = context.Patients.ToList();
 
-        //public List<Measurement> GetJournalMeasuremens(Journal journal)
-        //{
-        //    using DBContextClass context = new DBContextClass();
-        //    var journalMeasurements= context.Measurements.Where(m => m.JournalId == journal.Id).ToList();
-        //    return journalMeasurements;
-        //}
+                foreach (var patient in allPatients)
+                {
+                    foreach (var journal in patient.Journals)
+                    {
+                        journal.Measurements.Clear();
+                    }
+
+                    patient.Journals.Clear();
+                }
+
+                // Remove all patients from the database
+                context.Patients.RemoveRange(allPatients);
+
+                // Save changes to the database
+                context.SaveChanges();
+            }
+        }
+
+        public void SaveJournalToPatient(string comment, List<double> RRlist)
+        {
+            using (DBContextClass context = new DBContextClass())
+            {
+                var existingPatient = context.Patients
+                .Include(p => p.Journals)
+                .ThenInclude(j => j.Measurements)
+                .FirstOrDefault(p => p.Id == currentPatient.Id);
+
+                Journal newJournal = new Journal();
+                newJournal.Comment = comment;
+
+                foreach (var item in RRlist)
+                {
+                    Measurement m = new Measurement();
+                    m.mV = item;
+                    newJournal.Measurements.Add(m);
+                }
+                existingPatient.Journals.Add(newJournal);
+
+                context.SaveChanges();
+                currentPatient = null;
+                currentJournalId = 0;
+            }
+        }
+
+        public void CreateBogusDB()
+        {
+            var patients = GeneratePeople();
+            using (DBContextClass context = new DBContextClass())
+            {
+                context.Patients.AddRange(patients);
+                context.SaveChanges();
+            }
+        }
+
+        private List<Patient> GeneratePeople()
+        {
+            Randomizer.Seed = new Random(1);
+
+            List<Patient> model = new List<Patient>();
+
+            var faker = new Faker<Patient>()
+                .RuleFor(x => x.FirstName, y => y.Name.FirstName())
+                .RuleFor(x => x.LastName, z => z.Name.LastName())
+                .RuleFor(x => x.CPR, z => z.Random.Replace("##########"));
+
+            var result = faker.Generate(2);
+            result.ForEach(x => model.Add(x));
+            return model;
+        }
     }
 }

@@ -42,7 +42,7 @@
         <Button x:Name="LoadNewestButton" Content="Load Newest" HorizontalAlignment="Left" Margin="10,81,0,0" VerticalAlignment="Top" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Click="LoadNewestButton_Click"/>
         <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click" Height="35" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="242,7,0,0" TextWrapping="Wrap" Text="Puls: " VerticalAlignment="Top" FontSize="18"/>
+        <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="242,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="18"/>
         <Button x:Name="SaveToDBButton" Content="Save" HorizontalAlignment="Left" Margin="100,174,0,0" VerticalAlignment="Top" Click="SaveToDBButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1"/>
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
         <ComboBox x:Name="EKGMeasurementCombobox" HorizontalAlignment="Left" Margin="10,349,0,0" VerticalAlignment="Top" Width="242" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
@@ -59,7 +59,7 @@
         <ComboBox x:Name="SearchDBDropDownComboBox" HorizontalAlignment="Left" Margin="487,32,0,0" VerticalAlignment="Top" Width="262" SelectionChanged="SearchDBDropDownComboBox_SelectionChanged"/>
         <ListBox x:Name="JournalListBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="487,82,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="131" Width="259" SelectionChanged="JournalListBox_SelectionChanged"/>
         <Button x:Name="ResetUIButton" Content="Reset" HorizontalAlignment="Left" Margin="165,153,0,0" VerticalAlignment="Top" Click="ResetUIButton_Click" Height="32" Width="98" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="523,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" Width="144"/>
+        <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="523,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="42" Width="144"/>
         <Button x:Name="EditPatientButton" Content="Edit patient" HorizontalAlignment="Left" Margin="100,174,0,0" VerticalAlignment="Top" Click="EditPatientButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Visibility="Hidden" IsEnabled="False"/>
         <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="762,174,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.ColumnSpan="2" IsEnabled="False"/>
 

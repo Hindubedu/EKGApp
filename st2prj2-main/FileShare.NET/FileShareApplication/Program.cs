@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using FileShare;
 
 // To upload (on RaspBerry)
 /*
@@ -8,6 +9,7 @@ FileStream localFileStream = new FileStream("data_6.csv", FileMode.Open); // Ope
 string filename = uploader.Save("data.csv", localFileStream); // Upload data to a file
 Console.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
 */
+
 
 Downloader downloader = new Downloader("gruppe_10");
 var filenames = downloader.GetFilenames();

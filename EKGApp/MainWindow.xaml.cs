@@ -50,7 +50,12 @@ namespace EKGApp
             MyCollection.Add(EKGLine);
             DataContext = this;
             LoadInitialCloudFiles();
-            //dbController.CreateBogusDB();
+
+            //dbController.ClearAllPatients();
+            if (dbController.IsDatabaseEmpty())
+            {
+                FakeDataGenerator.PopulateDB();
+            }
         }
 
         private void LoadInitialCloudFiles()

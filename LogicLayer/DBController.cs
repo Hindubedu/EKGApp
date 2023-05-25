@@ -99,7 +99,6 @@ namespace LogicLayer
         {
             using (DBContextClass context = new DBContextClass())
             {
-
                 var allPatients = context.Patients.ToList();
 
                 foreach (var patient in allPatients)
@@ -108,7 +107,6 @@ namespace LogicLayer
                     {
                         journal.Measurements.Clear();
                     }
-
                     patient.Journals.Clear();
                 }
                 // Remove all patients from the database
@@ -134,11 +132,18 @@ namespace LogicLayer
             await db.Measurements.AddRangeAsync(mes);
             await db.SaveChangesAsync();
         }
+
+        public bool IsDatabaseEmpty()
+        {
+            using var context = new DBContextClass();
+            return !context.Patients.Any(); //returns true if database is empty notice the !
+        }
     }
+
 
     public static class FakeDataGenerator
     {
-        public static void CreateBogusDB()
+        public static void PopulateDB()
         {
             var patients = GeneratePeople();
             using (DBContextClass context = new DBContextClass())
@@ -159,7 +164,7 @@ namespace LogicLayer
                 .RuleFor(x => x.LastName, z => z.Name.LastName())
                 .RuleFor(x => x.CPR, z => z.Random.Replace("##########"));
 
-            var result = faker.Generate(2);
+            var result = faker.Generate(10000);
             result.ForEach(x => model.Add(x));
             return model;
         }

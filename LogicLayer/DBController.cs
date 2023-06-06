@@ -36,10 +36,10 @@ namespace LogicLayer
             return patient;
         }
 
-        public List<Patient> SearchForPatients(string searchText)
+        public List<Patient> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
         {
             using DBContextClass context = new DBContextClass();
-            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).ToList();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList();
             if (patients != null)
             {
                 return patients;
@@ -52,12 +52,20 @@ namespace LogicLayer
 
         public Journal LoadJournal(int identifier)
         {
-            using (var context = new DBContextClass())
+            try
             {
-                var journal = context.Journals
+                using (var context = new DBContextClass())
+                {
+                    var journal = context.Journals
                         .Include(m => m.Measurements)
                         .FirstOrDefault(p => p.Id == identifier);
-                return journal;
+                    return journal;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while loading the journal: " + ex.Message);
+                return null;
             }
         }
         public bool EditPatient(int patientId, int journalId, string firstname, string lastname, string cpr, string comment, List<double> RRlist) //could be seperated into smaller methods

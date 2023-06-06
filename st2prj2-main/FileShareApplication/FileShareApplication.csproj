@@ -7,9 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
+    <!--<ItemGroup>
       <PackageReference Include="AU.ST2PRJ2.Fileshare" Version="1.0.3" />
-    </ItemGroup>
+    </ItemGroup>-->
 
 <!--    <ItemGroup>-->
 <!--      <ProjectReference Include="..\FileShare\FileShare.csproj" />-->

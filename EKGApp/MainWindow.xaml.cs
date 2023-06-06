@@ -1,5 +1,4 @@
-﻿using FileShare;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,15 +21,15 @@ namespace EKGApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window//TODO -Implement if database is empty method
+    public partial class MainWindow : Window
     {
         public SeriesCollection MyCollection { get; set; }
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
-        public string SaveString { get; set; } = "Save patient";
-        public string EditString { get; set; } = "Edit patient";
+        private string SaveString { get; set; } = "Save patient";
+        private string EditString { get; set; } = "Edit patient";
         Loader loader = new Loader();
-        DBController dbController = new DBController();
+        private DBController dbController = new DBController();
         double sample = 500;
         public Func<double, string> labelformatter { get; set; }
         public Func<double, string> labelformatter1 { get; set; }

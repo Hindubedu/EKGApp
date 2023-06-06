@@ -9,7 +9,6 @@ namespace LogicLayer
         {
             RRList = list;
         }
-
         public Tuple<bool,int> DetectedSTElevation()
         {
             // Find baseline
@@ -40,7 +39,6 @@ namespace LogicLayer
             {
                 stbool = true;
             }
-
             // Returner true, hvis st-elevation er til stede.
             Tuple<bool, int> result = new Tuple<bool, int>(stbool, puls);
             return result;
@@ -49,7 +47,6 @@ namespace LogicLayer
         public class Coordinates
         {
             public double X, Y;
-
             public Coordinates(double X, double Y)
             {
                 this.X = X;
@@ -79,7 +76,6 @@ namespace LogicLayer
                     // I listen over potentielle peaks, fjern X antal målinger (half_peak_width) til højre og venstre fra peaket 
                     rPeaks.RemoveAll(measurement => measurement.X < peak.X + half_peak_width && measurement.X > peak.X - half_peak_width);
                 }
-
                 return foundRPeaks;
             }
 
@@ -87,10 +83,8 @@ namespace LogicLayer
             public List<Coordinates> DetectSPeaks(List<Coordinates> signal, List<Coordinates> rPeaks, int half_peak_width)
             {
                 List<Coordinates> foundSPeaks = new();
-
                 // Algoritme til s-takker 
                 // For hver R-peak: find den laveste y-værdi mellem r-peak og r-peak + half_peak_width    
-
                 foreach (Coordinates rPeak in rPeaks)
                 {
                     // Find det laveste punkt mellem r-peak og r-peak + halvdelen af peak-bredde på signalet (y-aksen)
@@ -101,6 +95,5 @@ namespace LogicLayer
                 return foundSPeaks;
             }
         }
-
     }
 }

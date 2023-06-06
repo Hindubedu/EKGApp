@@ -12,7 +12,6 @@ namespace LogicLayer
 
             Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
 
-
             foreach (var item in RRlist)
             {
                 Measurement measurement = new Measurement { mV = item };
@@ -37,10 +36,10 @@ namespace LogicLayer
             return patient;
         }
 
-        public List<Patient> SearchForPatients(string searchText)
+        public List<Patient> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
         {
             using DBContextClass context = new DBContextClass();
-            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).ToList();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList();
             if (patients != null)
             {
                 return patients;
@@ -53,12 +52,20 @@ namespace LogicLayer
 
         public Journal LoadJournal(int identifier)
         {
-            using (var context = new DBContextClass())
+            try
             {
-                var journal = context.Journals
+                using (var context = new DBContextClass())
+                {
+                    var journal = context.Journals
                         .Include(m => m.Measurements)
                         .FirstOrDefault(p => p.Id == identifier);
-                return journal;
+                    return journal;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while loading the journal: " + ex.Message);
+                return null;
             }
         }
         public bool EditPatient(int patientId, int journalId, string firstname, string lastname, string cpr, string comment, List<double> RRlist) //could be seperated into smaller methods
@@ -100,7 +107,6 @@ namespace LogicLayer
         {
             using (DBContextClass context = new DBContextClass())
             {
-
                 var allPatients = context.Patients.ToList();
 
                 foreach (var patient in allPatients)
@@ -109,10 +115,8 @@ namespace LogicLayer
                     {
                         journal.Measurements.Clear();
                     }
-
                     patient.Journals.Clear();
                 }
-
                 // Remove all patients from the database
                 context.Patients.RemoveRange(allPatients);
 
@@ -136,12 +140,18 @@ namespace LogicLayer
             await db.Measurements.AddRangeAsync(mes);
             await db.SaveChangesAsync();
         }
+
+        public bool IsDatabaseEmpty()
+        {
+            using var context = new DBContextClass();
+            return !context.Patients.Any(); //returns true if database is empty notice the !
+        }
     }
+
 
     public static class FakeDataGenerator
     {
-
-        public static void CreateBogusDB()
+        public static void PopulateDB()
         {
             var patients = GeneratePeople();
             using (DBContextClass context = new DBContextClass())
@@ -162,7 +172,7 @@ namespace LogicLayer
                 .RuleFor(x => x.LastName, z => z.Name.LastName())
                 .RuleFor(x => x.CPR, z => z.Random.Replace("##########"));
 
-            var result = faker.Generate(2);
+            var result = faker.Generate(10000);
             result.ForEach(x => model.Add(x));
             return model;
         }

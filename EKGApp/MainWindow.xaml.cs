@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using Microsoft.IdentityModel.Tokens;
 using Data;
 using System.Text;
+using DataModels;
 
 namespace EKGApp
 {
@@ -253,7 +254,7 @@ namespace EKGApp
             }
         }
 
-        private void UpdatePatientUIInfo(Patient patient)
+        private void UpdatePatientUIInfo(PatientModel patient)
         {
             FirstNameTextBox.Text = patient.FirstName;
             LastNameTextBox.Text = patient.LastName;

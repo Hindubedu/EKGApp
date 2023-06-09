@@ -1,5 +1,7 @@
 ﻿using Bogus;
 using Data;
+using DataMapping;
+using DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogicLayer
@@ -25,14 +27,14 @@ namespace LogicLayer
             context.SaveChanges();
         }
 
-        public Patient LoadPatient(int id)
+        public PatientModel LoadPatient(int id)
         {
             using var context = new DBContextClass();
 
             var patient = context.Patients
                 .Include(j => j.Journals)
                     .ThenInclude(m => m.Measurements)
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id).ToModel();
             return patient;
         }
 
@@ -70,19 +72,15 @@ namespace LogicLayer
         }
         public bool EditPatient(int patientId, int journalId, string firstname, string lastname, string cpr, string comment, List<double> RRlist) //could be seperated into smaller methods
         {
-            using var context = new DBContextClass();
-            var existingPatient = context.Patients
-                .Include(p => p.Journals)
-                .ThenInclude(j => j.Measurements)
-                .FirstOrDefault(p => p.Id == patientId);
+            var context = new DBContextClass();
+            var existingPatient = LoadPatient(patientId);
 
             if (existingPatient == null)
             {
                 return false;
             }
 
-            existingPatient.FirstName = firstname;
-            existingPatient.LastName = lastname;
+            existingPatient.FullName = $"{firstname}+ {lastname}";
             existingPatient.CPR = cpr;
 
             var existingJournal = existingPatient.Journals.FirstOrDefault(j => j.Id == journalId);
@@ -93,7 +91,7 @@ namespace LogicLayer
                 existingJournal.Measurements.Clear();
                 foreach (var item in RRlist)
                 {
-                    Measurement m = new Measurement();
+                    var m = new MeasurementModel();
                     m.mV = item;
                     existingJournal.Measurements.Add(m);
                 }

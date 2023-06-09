@@ -1,21 +1,22 @@
 ﻿using Data;
 using DataModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataMapping
 {
     public static class PatientMapper
     {
+
+        public static List<PatientModel> ToModels(this List<Patient> patients)
+        {
+            var patientModels = patients.Select(p => p.ToModel()).ToList();
+            return patientModels;
+        }
         public static PatientModel ToModel(this Patient patient)
         {
             var patientmodel = new PatientModel();
             patientmodel.Id = patient.Id;
             patientmodel.CPR = patient.CPR;
-            patientmodel.FullName = $"{patient.FirstName} +{patient.LastName}";
+            patientmodel.FullName = $"{patient.FirstName} {patient.LastName}";
             patientmodel.Journals = patient.Journals.ToModels();
             return patientmodel;
         }

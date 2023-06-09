@@ -38,21 +38,21 @@ namespace LogicLayer
             return patient;
         }
 
-        public List<Patient> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
+        public List<PatientModel> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
         {
             using DBContextClass context = new DBContextClass();
-            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList().ToModels();
             if (patients != null)
             {
                 return patients;
             }
             else
             {
-                return new List<Patient>();
+                return new List<PatientModel>();
             }
         }
 
-        public Journal LoadJournal(int identifier)
+        public JournalModel LoadJournal(int identifier)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace LogicLayer
                 {
                     var journal = context.Journals
                         .Include(m => m.Measurements)
-                        .FirstOrDefault(p => p.Id == identifier);
+                        .FirstOrDefault(p => p.Id == identifier).ToModel();
                     return journal;
                 }
             }

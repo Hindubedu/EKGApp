@@ -209,13 +209,13 @@ namespace EKGApp
             }
         }
 
-        private List<ComboBoxItem> PatientNameAndCPR(List<Patient> patients)
+        private List<ComboBoxItem> PatientNameAndCPR(List<PatientModel> patients)
         {
             var patientItems = patients.Select(patient =>
             {
                 var item = new ComboBoxItem
                 {
-                    Content = $"{patient.FirstName} {patient.LastName} CPR: {patient.CPR}",
+                    Content = $"{patient.FullName} CPR: {patient.CPR}",
                     Tag = patient.Id // Set the Tag property to the patient ID
                 };
                 return item;
@@ -223,7 +223,7 @@ namespace EKGApp
             return patientItems.ToList();
         }
 
-        private List<ListBoxItem> SetJournalInfo(List<Journal> journals)
+        private List<ListBoxItem> SetJournalInfo(List<JournalModel> journals)
         {
             var journalItems = journals.Select(journal =>
             {
@@ -256,12 +256,11 @@ namespace EKGApp
 
         private void UpdatePatientUIInfo(PatientModel patient)
         {
-            FirstNameTextBox.Text = patient.FirstName;
-            LastNameTextBox.Text = patient.LastName;
+            FullNameTextBox.Text = patient.FullName;
             CPRTextBox.Text = patient.CPR;
         }
 
-        private void UpdateJournalUIInfo(Journal journal)
+        private void UpdateJournalUIInfo(JournalModel journal)
         {
             CommentTextBox.Text = journal.Comment;
             RRList.Clear();
@@ -307,8 +306,7 @@ namespace EKGApp
         {
             if (EditPatientButton.Content.ToString().Trim() == EditString)
             {
-                FirstNameTextBox.IsEnabled = true;
-                LastNameTextBox.IsEnabled = true;
+                FullNameTextBox.IsEnabled = true;
                 CPRTextBox.IsEnabled = true;
                 AddJournalButton.IsEnabled = true;
                 CommentTextBox.IsEnabled = true;
@@ -329,8 +327,7 @@ namespace EKGApp
                 EditPatientButton.IsEnabled = true;
                 EditPatientButton.Visibility = Visibility.Visible;
 
-                FirstNameTextBox.IsEnabled = false;
-                LastNameTextBox.IsEnabled = false;
+                FullNameTextBox.IsEnabled = false;
                 CPRTextBox.IsEnabled = false;
                 CommentTextBox.IsEnabled = false;
                 AddJournalButton.IsEnabled = false;
@@ -343,8 +340,7 @@ namespace EKGApp
                 EditPatientButton.Visibility = Visibility.Hidden;
                 EditPatientButton.Content = SaveString;
 
-                FirstNameTextBox.IsEnabled = true;
-                LastNameTextBox.IsEnabled = true;
+                FullNameTextBox.IsEnabled = true;
                 CPRTextBox.IsEnabled = true;
                 CommentTextBox.IsEnabled = true;
             }
@@ -364,7 +360,7 @@ namespace EKGApp
                 return;
             }
 
-            dbController.SavePatient(FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
+            dbController.SavePatient(FullNameTextBox.Text, FullNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
 
             ShowMessage("Patient saved...");
             HideSaveButton(false);
@@ -376,7 +372,7 @@ namespace EKGApp
             bool isSaved = false;
             if (IsUserInputCorrect(cleanedCPR, RRList))
             {
-                isSaved = dbController.EditPatient(CurrentPatientId, CurrentJournalId, FirstNameTextBox.Text, LastNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
+                isSaved = dbController.EditPatient(CurrentPatientId, CurrentJournalId, FullNameTextBox.Text, FullNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
 
             }
             if (isSaved)
@@ -413,8 +409,7 @@ namespace EKGApp
         }
         private void ResetUI()
         {
-            FirstNameTextBox.Clear();
-            LastNameTextBox.Clear();
+            FullNameTextBox.Clear();
             CPRTextBox.Clear();
             CommentTextBox.Clear();
             RRList.Clear();
@@ -435,8 +430,7 @@ namespace EKGApp
             {
                 CommentTextBox.IsEnabled = false;
                 CommentTextBox.Text = "";
-                FirstNameTextBox.IsEnabled = false;
-                LastNameTextBox.IsEnabled = false;
+                FullNameTextBox.IsEnabled = false;
                 CPRTextBox.IsEnabled=false;
                 AddJournalButton.IsEnabled = false;
                 await dbController.SaveJournalToPatient(CurrentPatientId,CommentTextBox.Text, RRList);

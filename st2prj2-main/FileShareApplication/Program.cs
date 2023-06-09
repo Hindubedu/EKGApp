@@ -9,6 +9,8 @@ string filename = uploader.Save("data.csv", localFileStream); // Upload data to 
 Console.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
 */
 
+using FileShare;
+
 Downloader downloader = new Downloader("gruppe_10");
 var filenames = downloader.GetFilenames();
 foreach (var name in filenames)

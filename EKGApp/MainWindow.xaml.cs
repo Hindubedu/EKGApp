@@ -247,10 +247,15 @@ namespace EKGApp
             {
                 var selectedPatientID = (int)selectedPatientItem.Tag;
                 var patient = dbController.LoadPatient(selectedPatientID);
+                if (patient == null)
+                {
+                    return;
+                }
                 CurrentPatientId = patient.Id;
                 UpdatePatientUIInfo(patient);
                 JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
                 HideSaveButton(true);
+                AddJournalButton.IsEnabled = true;
             }
         }
 
@@ -278,7 +283,6 @@ namespace EKGApp
                 CurrentJournalId = journal.Id;
                 UpdateJournalUIInfo(journal);
                 UpdateGraph();
-                CommentTextBox.IsEnabled = true;
             }
         }
 
@@ -309,7 +313,7 @@ namespace EKGApp
                 FullNameTextBox.IsEnabled = true;
                 CPRTextBox.IsEnabled = true;
                 AddJournalButton.IsEnabled = true;
-                CommentTextBox.IsEnabled = true;
+                CommentTextBox.IsEnabled = false;
                 EditPatientButton.Content = SaveString;
             }
             else if (EditPatientButton.Content.ToString() == SaveString)
@@ -372,7 +376,7 @@ namespace EKGApp
             bool isSaved = false;
             if (IsUserInputCorrect(cleanedCPR, RRList))
             {
-                isSaved = dbController.EditPatient(CurrentPatientId, CurrentJournalId, FullNameTextBox.Text, FullNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
+                isSaved = dbController.EditPatient(CurrentPatientId, FullNameTextBox.Text, cleanedCPR);
 
             }
             if (isSaved)
@@ -393,11 +397,6 @@ namespace EKGApp
             if (cleanCPR.Length != 10)
             {
                 sb.AppendLine("CPR must be 10 digits");
-            }
-
-            if (this.RRList.IsNullOrEmpty())
-            {
-                sb.AppendLine("Please Load a file to save");
             }
 
             if (sb.Length != 0)
@@ -443,6 +442,11 @@ namespace EKGApp
             {
                 ShowMessage("Please choose a patient or new EKG");
             }
+        }
+
+        private void CreateEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

@@ -59,7 +59,8 @@
         <Button x:Name="ResetUIButton" Content="Reset" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top" Click="ResetUIButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="523,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="42" Width="144"/>
         <Button x:Name="EditPatientButton" Content="Edit patient" HorizontalAlignment="Left" Margin="100,174,0,0" VerticalAlignment="Top" Click="EditPatientButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Visibility="Hidden" IsEnabled="False"/>
-        <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="487,219,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" IsEnabled="False"/>
+        <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="487,219,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" IsEnabled="True"/>
+        <Button x:Name="CreateEditButton" Content="Analyze" HorizontalAlignment="Left" Margin="299,169,0,0" VerticalAlignment="Top" Click="CreateEditButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1"/>
 
     </Grid>
 </Window>

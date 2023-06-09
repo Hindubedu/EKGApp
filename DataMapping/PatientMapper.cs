@@ -5,12 +5,6 @@ namespace DataMapping
 {
     public static class PatientMapper
     {
-
-        public static List<PatientModel> ToModels(this List<Patient> patients)
-        {
-            var patientModels = patients.Select(p => p.ToModel()).ToList();
-            return patientModels;
-        }
         public static PatientModel ToModel(this Patient patient)
         {
             var patientmodel = new PatientModel();

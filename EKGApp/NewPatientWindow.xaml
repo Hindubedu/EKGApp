@@ -1,0 +1,19 @@
+﻿<Window x:Class="EKGApp.NewPatientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EKGApp"
+        mc:Ignorable="d"
+        Title="Create New Patient" Height="220" Width="400" Background="#FFF2EECB">
+    <Grid>
+        <TextBox x:Name="FirstNameTextBox" HorizontalAlignment="Left" Margin="89,34,0,0" TextWrapping="Wrap" Text="First name" VerticalAlignment="Top" Width="238" GotFocus="TextBox_ClearText" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
+        <TextBox x:Name="LastNameTextBox" HorizontalAlignment="Left" Margin="89,63,0,0" TextWrapping="Wrap" Text="Last name" VerticalAlignment="Top" Width="238" GotFocus="TextBox_ClearText" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
+        <TextBox x:Name="CPRTextBox" HorizontalAlignment="Left" Margin="89,95,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="238" GotFocus="TextBox_ClearText" PreviewTextInput="CPRTextBox_PreviewTextInput"/>
+        <Label Content="First Name" HorizontalAlignment="Left" Margin="17,28,0,0" VerticalAlignment="Top" Height="24"/>
+        <Label Content="Last Name" HorizontalAlignment="Left" Margin="17,57,0,0" VerticalAlignment="Top" Height="23"/>
+        <Label Content="CPR" HorizontalAlignment="Left" Margin="17,92,0,0" VerticalAlignment="Top" Height="24"/>
+        <Button x:Name="CreateButton" Content="Create Patient" HorizontalAlignment="Left" Margin="89,126,0,0" VerticalAlignment="Top" Width="238" Click="CreateButton_Click"/>
+        <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="89,151,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="238" Height="43"/>
+    </Grid>
+</Window>

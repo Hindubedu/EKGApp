@@ -43,25 +43,23 @@
         <Button x:Name="AnalyzeButton" Content="Analyze" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top" Click="AnalyzeButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <Button x:Name="LoadFromFileButton" Content="LoadFromFile" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Click="LoadFromFileButton_Click" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <TextBlock x:Name="PulsTextBlock" HorizontalAlignment="Left" Margin="242,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" FontSize="18"/>
-        <Button x:Name="SaveToDBButton" Content="Save" HorizontalAlignment="Left" Margin="0,169,0,0" VerticalAlignment="Top" Click="SaveToDBButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1"/>
         <Image HorizontalAlignment="Left" Height="117" Margin="10,-23,0,0" VerticalAlignment="Top" Width="210" Source="/1000_F_232870622_724EVEP3jpfNzJMJEFJDslHF9Mqq1Ahz-removebg-preview.png"/>
         <ComboBox x:Name="EKGMeasurementCombobox" HorizontalAlignment="Left" Margin="10,349,0,0" VerticalAlignment="Top" Width="242" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
         <Button x:Name="LoadFromCombobox" Content="LoadSelected" HorizontalAlignment="Left" Margin="10,293,0,0" VerticalAlignment="Top" Height="35" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Click="LoadFromCombobox_Click"/>
-        <TextBox x:Name="FirstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="0,43,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="120" GotFocus="TextBox_ClearText" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
-        <TextBox x:Name="LastNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="136,43,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Width="120" PreviewTextInput="NameTextBoxes_PreviewTextInput" GotFocus="TextBox_ClearText"/>
-        <TextBox x:Name="CPRTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="288,43,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="120" GotFocus="TextBox_ClearText" PreviewTextInput="CPRTextBox_PreviewTextInput"/>
-        <TextBox x:Name="CommentTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="0,114,0,0" TextWrapping="Wrap" Text="Comments" VerticalAlignment="Top" Width="408" Height="39" GotFocus="TextBox_ClearText" RenderTransformOrigin="0.342,0.632"/>
-        <Label x:Name="NameLabel" Grid.Column="1" Content="First Name" HorizontalAlignment="Left" Margin="0,17,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="CPRLabel" Grid.Column="1" Content="CPR" HorizontalAlignment="Left" Margin="288,19,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="CommentLabel" Content="Comments" HorizontalAlignment="Left" Margin="0,90,0,0" VerticalAlignment="Top" Width="120" Grid.Column="1"/>
-        <Label x:Name="LastNameLabel" Grid.Column="1" Content="Last Name" HorizontalAlignment="Left" Margin="136,19,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="CommentTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="0,114,0,0" TextWrapping="Wrap" Text="Comments" VerticalAlignment="Top" Width="408" Height="49" RenderTransformOrigin="0.342,0.632"/>
+        <Label x:Name="FullNameLabel" Grid.Column="1" Content="Name" HorizontalAlignment="Left" Margin="0,17,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="CPRLabel" Grid.Column="1" Content="CPR" HorizontalAlignment="Left" Margin="288,20,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="CommentLabel" Content="Journal Comments" HorizontalAlignment="Left" Margin="800,90,0,0" VerticalAlignment="Top" Width="124" Grid.ColumnSpan="2"/>
         <TextBox x:Name="SearchDBTextBox" HorizontalAlignment="Left" Margin="487,0,0,0" TextWrapping="Wrap" Text="Search DB" VerticalAlignment="Top" Width="259" GotFocus="TextBox_ClearText" TextChanged="SearchDBTextBox_TextChanged"/>
         <ComboBox x:Name="SearchDBDropDownComboBox" HorizontalAlignment="Left" Margin="487,32,0,0" VerticalAlignment="Top" Width="262" SelectionChanged="SearchDBDropDownComboBox_SelectionChanged"/>
         <ListBox x:Name="JournalListBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="487,82,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="131" Width="259" SelectionChanged="JournalListBox_SelectionChanged"/>
         <Button x:Name="ResetUIButton" Content="Reset" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top" Click="ResetUIButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423"/>
-        <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="523,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="42" Width="144"/>
-        <Button x:Name="EditPatientButton" Content="Edit patient" HorizontalAlignment="Left" Margin="100,174,0,0" VerticalAlignment="Top" Click="EditPatientButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Visibility="Hidden" IsEnabled="False"/>
-        <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="487,219,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" IsEnabled="False"/>
+        <TextBlock x:Name="MessageTextBox" HorizontalAlignment="Left" Margin="487,268,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="60" Width="259"/>
+        <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="487,219,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" IsEnabled="True"/>
+        <Button x:Name="CreateEditButton" Content="Edit/Create" HorizontalAlignment="Left" Margin="0,181,0,0" VerticalAlignment="Top" Click="CreateEditButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1"/>
+        <Button x:Name="CreateNewPatientButton" Content="New Patient" HorizontalAlignment="Left" Margin="299,181,0,0" VerticalAlignment="Top" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Click="CreateNewPatientButton_Click"/>
+        <TextBlock x:Name="NameTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="5,43,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
+        <TextBlock x:Name="CPRTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="293,46,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="178"/>
 
     </Grid>
 </Window>

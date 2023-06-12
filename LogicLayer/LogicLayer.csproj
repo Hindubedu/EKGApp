@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataMapping\DataMapping.csproj" />
+    <ProjectReference Include="..\DataModels\DataModels.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\st2prj2-main\FileShare\FileShare.csproj" />
   </ItemGroup>

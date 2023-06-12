@@ -1,5 +1,7 @@
 ﻿using Bogus;
 using Data;
+using DataMapping;
+using DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogicLayer
@@ -25,7 +27,21 @@ namespace LogicLayer
             context.SaveChanges();
         }
 
-        public Patient LoadPatient(int id)
+        public bool SavePatient2(string firstname, string lastname, string cpr)
+        {
+            if (CprExist(cpr))
+            {
+                return false;
+            }
+            using DBContextClass context = new DBContextClass();
+            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr };
+            context.Add(patient);
+            context.SaveChanges();
+            return true;
+        }
+
+
+        public PatientModel? LoadPatient(int id)
         {
             using var context = new DBContextClass();
 
@@ -33,24 +49,28 @@ namespace LogicLayer
                 .Include(j => j.Journals)
                     .ThenInclude(m => m.Measurements)
                 .FirstOrDefault(p => p.Id == id);
-            return patient;
+            if (patient==null)
+            {
+                return null;
+            }
+            return patient.ToModel();
         }
 
-        public List<Patient> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
+        public List<PatientModel> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
         {
             using DBContextClass context = new DBContextClass();
-            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList().ToModels();
             if (patients != null)
             {
                 return patients;
             }
             else
             {
-                return new List<Patient>();
+                return new List<PatientModel>();
             }
         }
 
-        public Journal LoadJournal(int identifier)
+        public JournalModel? LoadJournal(int identifier)
         {
             try
             {
@@ -59,7 +79,11 @@ namespace LogicLayer
                     var journal = context.Journals
                         .Include(m => m.Measurements)
                         .FirstOrDefault(p => p.Id == identifier);
-                    return journal;
+                    if (journal==null)
+                    {
+                        return null;
+                    }
+                    return journal.ToModel();
                 }
             }
             catch (Exception ex)
@@ -68,37 +92,22 @@ namespace LogicLayer
                 return null;
             }
         }
-        public bool EditPatient(int patientId, int journalId, string firstname, string lastname, string cpr, string comment, List<double> RRlist) //could be seperated into smaller methods
+        public bool EditPatient(int patientId, string firstName, string lastName, string cpr) //could be seperated into smaller methods
         {
-            using var context = new DBContextClass();
+            var context = new DBContextClass();
+
             var existingPatient = context.Patients
-                .Include(p => p.Journals)
-                .ThenInclude(j => j.Measurements)
+                .Include(j => j.Journals)
+                    .ThenInclude(m => m.Measurements)
                 .FirstOrDefault(p => p.Id == patientId);
 
             if (existingPatient == null)
             {
                 return false;
             }
-
-            existingPatient.FirstName = firstname;
-            existingPatient.LastName = lastname;
+            existingPatient.FirstName = $"{firstName}";
+            existingPatient.LastName = $"{lastName}";
             existingPatient.CPR = cpr;
-
-            var existingJournal = existingPatient.Journals.FirstOrDefault(j => j.Id == journalId);
-
-            if (existingJournal != null)
-            {
-                existingJournal.Comment = comment;
-                existingJournal.Measurements.Clear();
-                foreach (var item in RRlist)
-                {
-                    Measurement m = new Measurement();
-                    m.mV = item;
-                    existingJournal.Measurements.Add(m);
-                }
-
-            }
             context.SaveChanges();
             return true;
         }
@@ -146,8 +155,44 @@ namespace LogicLayer
             using var context = new DBContextClass();
             return !context.Patients.Any(); //returns true if database is empty notice the !
         }
-    }
 
+        public bool DeletePatient(int paitentId)
+        {
+            var context = new DBContextClass();
+            var patient = context.Patients.FirstOrDefault(x => x.Id == paitentId);
+            if (patient == null)
+            {
+                return false;
+            }
+
+            context.Patients.Remove(patient);
+            context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteJournal(int journalId)
+        {
+            var context = new DBContextClass();
+            var journal = context.Journals.FirstOrDefault(x => x.Id == journalId);
+            if (journal==null)
+            {
+                return false;
+            }
+            context.Journals.Remove(journal);
+            context.SaveChanges();
+            return true;
+        }
+        private bool CprExist(string cpr)
+        {
+            var context = new DBContextClass();
+            var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
+            if (existingPatient!=null)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
 
     public static class FakeDataGenerator
     {

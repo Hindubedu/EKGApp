@@ -27,6 +27,20 @@ namespace LogicLayer
             context.SaveChanges();
         }
 
+        public bool SavePatient2(string firstname, string lastname, string cpr)
+        {
+            if (CprExist(cpr))
+            {
+                return false;
+            }
+            using DBContextClass context = new DBContextClass();
+            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr };
+            context.Add(patient);
+            context.SaveChanges();
+            return true;
+        }
+
+
         public PatientModel? LoadPatient(int id)
         {
             using var context = new DBContextClass();
@@ -78,7 +92,7 @@ namespace LogicLayer
                 return null;
             }
         }
-        public bool EditPatient(int patientId, string fullname, string cpr) //could be seperated into smaller methods
+        public bool EditPatient(int patientId, string firstName, string lastName, string cpr) //could be seperated into smaller methods
         {
             var context = new DBContextClass();
 
@@ -91,9 +105,8 @@ namespace LogicLayer
             {
                 return false;
             }
-            var splitname = fullname.Split(" ");
-            existingPatient.FirstName = $"{splitname[0]}";
-            existingPatient.LastName = $"{splitname[1]}";
+            existingPatient.FirstName = $"{firstName}";
+            existingPatient.LastName = $"{lastName}";
             existingPatient.CPR = cpr;
             context.SaveChanges();
             return true;
@@ -142,8 +155,44 @@ namespace LogicLayer
             using var context = new DBContextClass();
             return !context.Patients.Any(); //returns true if database is empty notice the !
         }
-    }
 
+        public bool DeletePatient(int paitentId)
+        {
+            var context = new DBContextClass();
+            var patient = context.Patients.FirstOrDefault(x => x.Id == paitentId);
+            if (patient == null)
+            {
+                return false;
+            }
+
+            context.Patients.Remove(patient);
+            context.SaveChanges();
+            return true;
+        }
+
+        public bool DeleteJournal(int journalId)
+        {
+            var context = new DBContextClass();
+            var journal = context.Journals.FirstOrDefault(x => x.Id == journalId);
+            if (journal==null)
+            {
+                return false;
+            }
+            context.Journals.Remove(journal);
+            context.SaveChanges();
+            return true;
+        }
+        private bool CprExist(string cpr)
+        {
+            var context = new DBContextClass();
+            var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
+            if (existingPatient!=null)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
 
     public static class FakeDataGenerator
     {

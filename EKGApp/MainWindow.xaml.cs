@@ -5,16 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Diagnostics;
 using LogicLayer;
-using System.Text.RegularExpressions;
-using Microsoft.IdentityModel.Tokens;
-using Data;
-using System.Text;
 using DataModels;
 
 namespace EKGApp
@@ -27,8 +22,6 @@ namespace EKGApp
         public SeriesCollection MyCollection { get; set; }
         private LineSeries EKGLine;
         List<double> RRList = new List<double>();
-        private string SaveString { get; set; } = "Save patient";
-        private string EditString { get; set; } = "Edit patient";
         Loader loader = new Loader();
         private DBController dbController = new DBController();
         double sample = 500;
@@ -65,7 +58,7 @@ namespace EKGApp
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
         {
-            if (RRList.Count()==0)
+            if (!RRList.Any())
             {
                 ShowMessage("Please load a file");
                 return;
@@ -101,22 +94,13 @@ namespace EKGApp
                         }
                         else
                         {
-                            Debug.WriteLine($"Error in line: {index}, linesplit not working: {doubleValues.Length} lines after split");
+                            Debug.WriteLine($"Error in line: {index}, line-split not working: {doubleValues.Length} lines after split");
                         }
                     }
                     index++;
                 }
             }
         }
-
-        //private void UploadButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //To upload(on RaspBerry)
-        //    Uploader uploader = new Uploader("F23_Gruppe_02"); // Create an Uploader instance with a group name
-        //    FileStream localFileStream = new FileStream("NormaltEKG.csv", FileMode.Open); // Open a filestream to data
-        //    string filename = uploader.Save("NormaltEKG.csv", localFileStream); // Upload data to a file
-        //    Debug.WriteLine(filename); // Prints the filename the data is saved in - can change if you try to use same filename
-        //}
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -127,8 +111,7 @@ namespace EKGApp
             Graf.AxisX[0].Separator.Step = 0.04 / (1 / sample);
             Graf.AxisX[1].Separator.Step = 0.2 / (1 / sample);
 
-            //Skal indstilles til 1.5 mV, eller hvad der cirka passer. Skal justeres og tilpasses senere 
-            //når vi har målinger vi kan teste på
+
             Graf.AxisY[0].MinValue = -0.5;
             Graf.AxisY[1].MinValue = -0.5;
             Graf.AxisY[0].MaxValue = 2.0;
@@ -154,6 +137,7 @@ namespace EKGApp
                 ShowMessage("Loaded");
             }
             CurrentJournalId = 0;
+            AddJournalButton.IsEnabled = true;
         }
 
         private void LoadNewestButton_Click(object sender, RoutedEventArgs e) ///Loads the newest measurement from the cloud and shows it on the graf, also updates the EKGmeasurementscombobox
@@ -172,41 +156,21 @@ namespace EKGApp
 
         private void TextBox_ClearText(object sender, RoutedEventArgs e)
         {
-            if (sender is TextBox textBox)
+            if (sender is not TextBox textBox) return;
+            if (textBox.Tag == null)
             {
-                if (textBox.Tag == null)
-                {
-                    textBox.Text = string.Empty;
-                    textBox.Tag = "Focused";
-                }
+                textBox.Text = string.Empty;
+                textBox.Tag = "Focused";
             }
-        }
-
-        private void SaveToDBButton_Click(object sender, RoutedEventArgs e)
-        {
-            SaveToDB();
-        }
-
-        private void NameTextBoxes_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex(@"\P{L}+"); // Should prohibit to any letter
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void CPRTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !e.Text.All(char.IsDigit);
         }
 
         private void SearchDBTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var patients = dbController.SearchForPatients(SearchDBTextBox.Text);
 
-            if (patients.Count > 0)
-            {
-                SearchDBDropDownComboBox.ItemsSource = PatientNameAndCPR(patients);
-                SearchDBDropDownComboBox.IsDropDownOpen = true;
-            }
+            if (patients.Count <= 0) return;
+            SearchDBDropDownComboBox.ItemsSource = PatientNameAndCPR(patients);
+            SearchDBDropDownComboBox.IsDropDownOpen = true;
         }
 
         private List<ComboBoxItem> PatientNameAndCPR(List<PatientModel> patients)
@@ -239,8 +203,6 @@ namespace EKGApp
 
         private void SearchDBDropDownComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EditPatientButton.Content = EditString;
-            CommentTextBox.IsEnabled = false;
             var comboBox = (ComboBox)sender;
             var selectedPatientItem = (ComboBoxItem)comboBox.SelectedItem;
             if (selectedPatientItem != null)
@@ -254,15 +216,14 @@ namespace EKGApp
                 CurrentPatientId = patient.Id;
                 UpdatePatientUIInfo(patient);
                 JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
-                HideSaveButton(true);
                 AddJournalButton.IsEnabled = true;
             }
         }
 
         private void UpdatePatientUIInfo(PatientModel patient)
         {
-            FullNameTextBox.Text = patient.FullName;
-            CPRTextBox.Text = patient.CPR;
+            NameTextBlock.Text = patient.FullName;
+            CPRTextBlock.Text = patient.CPR;
         }
 
         private void UpdateJournalUIInfo(JournalModel journal)
@@ -306,118 +267,16 @@ namespace EKGApp
             MessageTextBox.Text = "";
         }
 
-        private void EditPatientButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (EditPatientButton.Content.ToString().Trim() == EditString)
-            {
-                FullNameTextBox.IsEnabled = true;
-                CPRTextBox.IsEnabled = true;
-                AddJournalButton.IsEnabled = true;
-                CommentTextBox.IsEnabled = false;
-                EditPatientButton.Content = SaveString;
-            }
-            else if (EditPatientButton.Content.ToString() == SaveString)
-            {
-                EditPatientInDB();
-            }
-        }
-
-        private void HideSaveButton(bool hideSaveButton) /// Method to switch 
-        {
-            if (hideSaveButton == true)
-            {
-                SaveToDBButton.IsEnabled = false;
-                SaveToDBButton.Visibility = Visibility.Hidden;
-                EditPatientButton.IsEnabled = true;
-                EditPatientButton.Visibility = Visibility.Visible;
-
-                FullNameTextBox.IsEnabled = false;
-                CPRTextBox.IsEnabled = false;
-                CommentTextBox.IsEnabled = false;
-                AddJournalButton.IsEnabled = false;
-            }
-            else
-            {
-                SaveToDBButton.IsEnabled = true;
-                SaveToDBButton.Visibility = Visibility.Visible;
-                EditPatientButton.IsEnabled = false;
-                EditPatientButton.Visibility = Visibility.Hidden;
-                EditPatientButton.Content = SaveString;
-
-                FullNameTextBox.IsEnabled = true;
-                CPRTextBox.IsEnabled = true;
-                CommentTextBox.IsEnabled = true;
-            }
-        }
-
-        private void SaveToDB()
-        {
-            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
-            if (!IsUserInputCorrect(cleanedCPR, RRList))
-            {
-                return;
-            }
-            
-            if (CurrentPatientId!=0)
-            {
-                ShowMessage("Patient not saved...");
-                return;
-            }
-
-            dbController.SavePatient(FullNameTextBox.Text, FullNameTextBox.Text, cleanedCPR, CommentTextBox.Text, RRList);
-
-            ShowMessage("Patient saved...");
-            HideSaveButton(false);
-        }
-
-        private void EditPatientInDB()
-        {
-            string cleanedCPR = CPRTextBox.Text.Replace(" ", string.Empty);
-            bool isSaved = false;
-            if (IsUserInputCorrect(cleanedCPR, RRList))
-            {
-                isSaved = dbController.EditPatient(CurrentPatientId, FullNameTextBox.Text, cleanedCPR);
-
-            }
-            if (isSaved)
-            {
-                ResetUI();
-                ShowMessage("Changes Saved");
-            }
-            else
-            {
-                ShowMessage("Cannot find patient");
-            }
-        }
-
-        private bool IsUserInputCorrect(string cleanCPR, List<double> RRList)
-        {
-            var sb = new StringBuilder();
-
-            if (cleanCPR.Length != 10)
-            {
-                sb.AppendLine("CPR must be 10 digits");
-            }
-
-            if (sb.Length != 0)
-            {
-                ShowMessage(sb.ToString());
-                return false;
-            }
-            return true;
-        }
         private void ResetUI()
         {
-            FullNameTextBox.Clear();
-            CPRTextBox.Clear();
+            NameTextBlock.Text = "Name";
+            CPRTextBlock.Text = "CPR";
             CommentTextBox.Clear();
             RRList.Clear();
             EKGLine.Values.Clear();
             LoadInitialCloudFiles();
             SearchDBTextBox.Text = "";
             SearchDBDropDownComboBox.ItemsSource = null;
-            HideSaveButton(false);
-            EditPatientButton.Content = EditString;
             AddJournalButton.IsEnabled = false;
             CurrentJournalId = 0;
             CurrentPatientId = 0;
@@ -427,14 +286,10 @@ namespace EKGApp
         {
             if (CurrentPatientId != 0 && RRList.Count > 0 && CurrentJournalId == 0)
             {
-                CommentTextBox.IsEnabled = false;
-                CommentTextBox.Text = "";
-                FullNameTextBox.IsEnabled = false;
-                CPRTextBox.IsEnabled=false;
                 AddJournalButton.IsEnabled = false;
                 await dbController.SaveJournalToPatient(CurrentPatientId,CommentTextBox.Text, RRList);
                 ShowMessage("Journal Saved");
-                EditPatientButton.Content = EditString;
+                CommentTextBox.Text = "";
                 CurrentPatientId = 0;
                 CurrentJournalId = 0;
             }
@@ -446,7 +301,14 @@ namespace EKGApp
 
         private void CreateEditButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            EditCreate editCreate = new EditCreate();
+            editCreate.Show();
+        }
+
+        private void CreateNewPatientButton_Click(object sender, RoutedEventArgs e)
+        {
+            NewPatientWindow newPatientWindow = new NewPatientWindow();
+            newPatientWindow.Show();
         }
     }
 }

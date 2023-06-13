@@ -8,26 +8,7 @@ namespace LogicLayer
 {
     public class DBController
     {
-        public void SavePatient(string firstname, string lastname, string cpr, string comment, List<double> RRlist)
-        {
-            using DBContextClass context = new DBContextClass();
-
-            Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
-
-            foreach (var item in RRlist)
-            {
-                Measurement measurement = new Measurement { mV = item };
-                journal.Measurements.Add(measurement);
-            }
-
-            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr };
-
-            patient.Journals.Add(journal);
-            context.Add(patient);
-            context.SaveChanges();
-        }
-
-        public bool SavePatient2(string firstname, string lastname, string cpr)
+        public bool SavePatient(string firstname, string lastname, string cpr)
         {
             if (CprExist(cpr))
             {

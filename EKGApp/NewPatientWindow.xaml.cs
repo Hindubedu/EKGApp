@@ -46,7 +46,7 @@ namespace EKGApp
             {
                 return;
             }
-            var saved = _dbController.SavePatient2(FirstNameTextBox.Text, LastNameTextBox.Text, CPRTextBox.Text.Trim());
+            var saved = _dbController.SavePatient(FirstNameTextBox.Text, LastNameTextBox.Text, CPRTextBox.Text.Trim());
             if (saved==false)
             {
                ShowMessage("CPR already exists");

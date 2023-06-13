@@ -10,10 +10,10 @@
         <TextBox x:Name="SearchDBTextBox" HorizontalAlignment="Left" Margin="10,23,0,0" TextWrapping="Wrap" Text="Search DB" VerticalAlignment="Top" Width="259" GotFocus="TextBox_ClearText" TextChanged="SearchDBTextBox_TextChanged"/>
         <ComboBox x:Name="SearchDBDropDownComboBox" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="262" SelectionChanged="SearchDBDropDownComboBox_SelectionChanged"/>
         <ListBox x:Name="JournalListBox" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,105,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="131" Width="259" SelectionChanged="JournalListBox_SelectionChanged"/>
-        <TextBox x:Name="FirstNameTextBox" HorizontalAlignment="Left" Margin="435,67,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="150" GotFocus="TextBox_ClearText" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
-        <TextBox x:Name="CPRTextBox" HorizontalAlignment="Left" Margin="435,131,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="150" GotFocus="TextBox_ClearText" PreviewTextInput="CPRTextBox_PreviewTextInput"/>
+        <TextBox x:Name="FirstNameTextBox" HorizontalAlignment="Left" Margin="435,67,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="150" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
+        <TextBox x:Name="CPRTextBox" HorizontalAlignment="Left" Margin="435,131,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="150" PreviewTextInput="CPRTextBox_PreviewTextInput"/>
         <TextBox x:Name="CommentTextBox" HorizontalAlignment="Left" Margin="310,168,0,0" TextWrapping="Wrap" Text="Comments" VerticalAlignment="Top" Width="408" Height="38" RenderTransformOrigin="0.342,0.632" IsEnabled="False"/>
-        <TextBox x:Name="LastNameTextBox" HorizontalAlignment="Left" Margin="435,99,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="150" GotFocus="TextBox_ClearText" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
+        <TextBox x:Name="LastNameTextBox" HorizontalAlignment="Left" Margin="435,99,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="150" PreviewTextInput="NameTextBoxes_PreviewTextInput"/>
         <Label x:Name="FirstNameLabes" Content="First Name" HorizontalAlignment="Left" Margin="310,59,0,0" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="LastNameLabel" Content="Last Name" HorizontalAlignment="Left" Margin="310,95,0,0" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="CPRLabes" Content="CPR" HorizontalAlignment="Left" Margin="310,126,0,0" VerticalAlignment="Top" Width="120"/>

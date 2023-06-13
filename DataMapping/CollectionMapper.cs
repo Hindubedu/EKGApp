@@ -9,6 +9,10 @@ namespace DataMapping
         {
             return patients.Select(p => p.ToModel()).ToList();
         }
+        public static List<PatientEditModel> ToEditModels(this List<Patient> patients)
+        {
+            return patients.Select(p => p.ToEditModel()).ToList();
+        }
         public static ICollection<JournalModel> ToModels(this ICollection<Journal> journals)
         {
             return journals.Select(j => j.ToModel()).ToList();

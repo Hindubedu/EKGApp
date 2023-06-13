@@ -15,6 +15,17 @@ namespace DataMapping
             return patientmodel;
         }
 
+        public static PatientEditModel ToEditModel(this Patient patient)
+        {
+            var patientmodel = new PatientEditModel();
+            patientmodel.Id = patient.Id;
+            patientmodel.CPR = patient.CPR;
+            patientmodel.FirstName = patient.FirstName;
+            patientmodel.LastName = patient.LastName;
+            patientmodel.Journals = patient.Journals.ToModels();
+            return patientmodel;
+        }
+
         public static JournalModel ToModel(this Journal journal)
         {
             var journalmodel = new JournalModel();

@@ -1,6 +1,6 @@
 ﻿namespace DataModels
 {
-    public class PatientModel
+    public class PatientModel: IPatientModel
     {
         public int Id { get; set; }
         public string CPR { get; set; }

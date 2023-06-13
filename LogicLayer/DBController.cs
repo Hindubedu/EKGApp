@@ -8,26 +8,7 @@ namespace LogicLayer
 {
     public class DBController
     {
-        public void SavePatient(string firstname, string lastname, string cpr, string comment, List<double> RRlist)
-        {
-            using DBContextClass context = new DBContextClass();
-
-            Journal journal = new Journal { Comment = comment, Date = DateTime.Now };
-
-            foreach (var item in RRlist)
-            {
-                Measurement measurement = new Measurement { mV = item };
-                journal.Measurements.Add(measurement);
-            }
-
-            Patient patient = new Patient { FirstName = firstname, LastName = lastname, CPR = cpr };
-
-            patient.Journals.Add(journal);
-            context.Add(patient);
-            context.SaveChanges();
-        }
-
-        public bool SavePatient2(string firstname, string lastname, string cpr)
+        public bool SavePatient(string firstname, string lastname, string cpr)
         {
             if (CprExist(cpr))
             {
@@ -56,6 +37,37 @@ namespace LogicLayer
             return patient.ToModel();
         }
 
+        public PatientEditModel? LoadPatientEditModel(int id)
+        {
+            using var context = new DBContextClass();
+
+            var patient = context.Patients
+                .Include(j => j.Journals)
+                .ThenInclude(m => m.Measurements)
+                .FirstOrDefault(p => p.Id == id);
+            if (patient == null)
+            {
+                return null;
+            }
+            return patient.ToEditModel();
+        }
+
+        public List<IPatientModel> SearchForPatients(string searchText, bool editModel) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
+        {
+            using DBContextClass context = new DBContextClass();
+            var patients = context.Patients.Where(x => x.CPR.Contains(searchText) || x.FirstName.Contains(searchText) || x.LastName.Contains(searchText)).Take(100).ToList();
+            if (patients == null) return new List<IPatientModel>();
+            if (editModel)
+            {
+                var editpatients = new List<IPatientModel>();
+                editpatients.AddRange(patients.ToEditModels());
+                return editpatients;
+            }
+            var normalpatients = new List<IPatientModel>();
+            normalpatients.AddRange(patients.ToModels());
+            return normalpatients;
+        }
+
         public List<PatientModel> SearchForPatients(string searchText) ///Searches DB for patients but only returns first 100 otherwise GUI is too slow 
         {
             using DBContextClass context = new DBContextClass();
@@ -64,10 +76,7 @@ namespace LogicLayer
             {
                 return patients;
             }
-            else
-            {
-                return new List<PatientModel>();
-            }
+            return new List<PatientModel>();
         }
 
         public JournalModel? LoadJournal(int identifier)
@@ -101,10 +110,8 @@ namespace LogicLayer
                     .ThenInclude(m => m.Measurements)
                 .FirstOrDefault(p => p.Id == patientId);
 
-            if (existingPatient == null)
-            {
-                return false;
-            }
+            if (existingPatient == null) return false;
+            
             existingPatient.FirstName = $"{firstName}";
             existingPatient.LastName = $"{lastName}";
             existingPatient.CPR = cpr;
@@ -182,11 +189,23 @@ namespace LogicLayer
             context.SaveChanges();
             return true;
         }
-        private bool CprExist(string cpr)
+        public bool CprExist(string cpr)
         {
             var context = new DBContextClass();
             var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
             if (existingPatient!=null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool CprAndIdMatch(int id, string cpr)
+        {
+            var context = new DBContextClass();
+            var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
+            if (existingPatient == null) return false;
+            if (existingPatient.Id==id)
             {
                 return true;
             }

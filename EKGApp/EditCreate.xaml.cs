@@ -16,8 +16,8 @@ namespace EKGApp
     public partial class EditCreate : Window
     {
         private DBController _dbController = new DBController();
-        public int CurrentJournalId { get; private set; }
-        public int CurrentPatientId { get; private set; }
+        private int CurrentJournalId { get; set; }
+        private int CurrentPatientId { get; set; }
         public EditCreate()
         {
             InitializeComponent();
@@ -26,22 +26,22 @@ namespace EKGApp
 
         private void SearchDBTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var patients = _dbController.SearchForPatients(SearchDBTextBox.Text);
+            var patients = _dbController.SearchForPatients(SearchDBTextBox.Text,true);
 
             if (patients.Count > 0)
             {
-                SearchDBDropDownComboBox.ItemsSource = PatientNameAndCPR(patients);
+                SearchDBDropDownComboBox.ItemsSource = PatientNameAndCPR(patients.Cast<PatientEditModel>());
                 SearchDBDropDownComboBox.IsDropDownOpen = true;
             }
         }
 
-        private List<ComboBoxItem> PatientNameAndCPR(List<PatientModel> patients)
+        private List<ComboBoxItem> PatientNameAndCPR(IEnumerable<PatientEditModel> patients)
         {
             var patientItems = patients.Select(patient =>
             {
                 var item = new ComboBoxItem
                 {
-                    Content = $"{patient.FullName} CPR: {patient.CPR}",
+                    Content = $"{patient.FirstName} {patient.LastName} CPR: {patient.CPR}",
                     Tag = patient.Id // Set the Tag property to the patient ID
                 };
                 return item;
@@ -68,7 +68,7 @@ namespace EKGApp
             if (selectedPatientItem != null)
             {
                 var selectedPatientID = (int)selectedPatientItem.Tag;
-                var patient = _dbController.LoadPatient(selectedPatientID);
+                var patient = _dbController.LoadPatientEditModel(selectedPatientID);
                 if (patient == null)
                 {
                     return;
@@ -76,7 +76,10 @@ namespace EKGApp
                 CurrentPatientId = patient.Id;
                 CurrentJournalId = 0;
                 JournalListBox.ItemsSource = SetJournalInfo(patient.Journals.ToList());
-                CurrentPatientTextBlock.Text = $"{patient.FullName} {patient.CPR}";
+                CurrentPatientTextBlock.Text = $"{patient.FirstName} {patient.LastName}  {patient.CPR}";
+                FirstNameTextBox.Text = patient.FirstName;
+                LastNameTextBox.Text = patient.LastName;
+                CPRTextBox.Text = patient.CPR;
                 CommentTextBox.IsEnabled=false;
             }
         }
@@ -175,6 +178,13 @@ namespace EKGApp
             if (cleanCPR.Length != 10)
             {
                 ShowMessage("CPR must be 10 digits");
+                return false;
+            }
+
+            if (_dbController.CprAndIdMatch(CurrentPatientId, cleanCPR)) return true;
+            if (_dbController.CprExist(cleanCPR))
+            {
+                ShowMessage("CPR exists in DB");
                 return false;
             }
             return true;

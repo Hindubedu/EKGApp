@@ -11,6 +11,7 @@ using LiveCharts.Wpf;
 using System.Diagnostics;
 using LogicLayer;
 using DataModels;
+using static System.Net.WebRequestMethods;
 
 namespace EKGApp
 {
@@ -53,7 +54,41 @@ namespace EKGApp
 
         private void LoadInitialCloudFiles()
         {
-            EKGMeasurementCombobox.ItemsSource = loader.GetFileNames();
+            var sortedFiles = ConvertFileNames(loader.GetFileNames());
+            EKGMeasurementCombobox.ItemsSource = sortedFiles;
+            EKGMeasurementCombobox.DisplayMemberPath = "DisplayText";
+
+        }
+
+        private List<CustomComboBoxItem> ConvertFileNames(List<string> files)
+        {
+            var dateList = GetFilesDateTime(files);
+            List<CustomComboBoxItem> sortedDates = dateList.OrderByDescending(d => d.DisplayText).ToList();
+            return sortedDates;
+            // Use the sortedFiles list as needed
+        }
+
+        private List<CustomComboBoxItem> GetFilesDateTime(List<string> filenames)
+        {
+            // Extract the date and time from the filename
+            List<CustomComboBoxItem> dateList = new List<CustomComboBoxItem>();
+            foreach (var item in filenames)
+            {
+                string dateString = Path.GetFileNameWithoutExtension(item).Substring(4); // Remove "File" prefix
+                string[] dateParts = dateString.Split('.');
+                if (dateParts.Length != 5)
+                {
+                    continue;
+                }
+                int hour = int.Parse(dateParts[0]);
+                int minute = int.Parse(dateParts[1]);
+                int day = int.Parse(dateParts[2]);
+                int month = int.Parse(dateParts[3]);
+                int year = int.Parse(dateParts[4]);
+                var date = new DateTime(year, month, day, hour, minute, 0);
+                dateList.Add(new CustomComboBoxItem(date, item));
+            }
+            return dateList;
         }
 
         private void AnalyzeButton_Click(object sender, RoutedEventArgs e)///Updates PulsTextBlock with a measurement of pulses/min (heartrate) if an EKG has been loaded 
@@ -122,19 +157,19 @@ namespace EKGApp
 
         private void LoadFromCombobox_Click(object sender, RoutedEventArgs e)
         {
-            string loadPath = EKGMeasurementCombobox.Text;
+            CustomComboBoxItem selectedItem = (CustomComboBoxItem)EKGMeasurementCombobox.SelectedItem;
+            string loadPath = selectedItem.DownloadValue;
             if (string.IsNullOrEmpty(loadPath))
             {
                 MessageBox.Show($"Please select a measurement to load");
             }
             else
             {
-                EKGLine.Values.Clear();
                 RRList.Clear();
                 var values = loader.LoadChoiceFromCloud(loadPath);
-                EKGLine.Values.AddRange(values);
                 RRList.AddRange(values.Cast<double>());
-                ShowMessage("Loaded");
+                UpdateGraph();
+                ShowMessage("Loading...");
             }
             CurrentJournalId = 0;
             AddJournalButton.IsEnabled = true;
@@ -144,14 +179,12 @@ namespace EKGApp
         {
             EKGLine.Values.Clear();
             RRList.Clear();
-
-            var cloudfilenames = loader.GetFileNames();
-            EKGMeasurementCombobox.ItemsSource = cloudfilenames;
-
-            var newest = loader.LoadChoiceFromCloud(cloudfilenames.First()); //does not work
-
-            EKGLine.Values.AddRange(newest);
-            RRList.AddRange(newest.Cast<double>());
+            LoadInitialCloudFiles();
+            var newest = ((CustomComboBoxItem)EKGMeasurementCombobox.Items[0]).DownloadValue;
+            var values = loader.LoadChoiceFromCloud(newest);
+            RRList.AddRange(values.Cast<double>());
+            UpdateGraph();
+            ShowMessage("Loading...");
         }
 
         private void TextBox_ClearText(object sender, RoutedEventArgs e)
@@ -231,6 +264,7 @@ namespace EKGApp
             CommentTextBox.Text = journal.Comment;
             RRList.Clear();
             RRList.AddRange(journal.Measurements.Select(item => item.mV));
+            ShowMessage("Loaded");
         }
 
         private void JournalListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -247,10 +281,23 @@ namespace EKGApp
             }
         }
 
-        private void UpdateGraph()
+        private async void UpdateGraph()
         {
+            var historam = new Histogram();
+            var baseline = historam.FindBaseLine(RRList);
+
             EKGLine.Values.Clear();
-            EKGLine.Values.AddRange(RRList.Select(value => (object)value));
+            if (baseline >= 0)
+            {
+                var correctedPList = RRList.Select(x => x - baseline);
+                EKGLine.Values.AddRange(correctedPList.Select(value => (object)value));
+
+            }
+            else
+            {
+                var correctedNList = RRList.Select(x => x - baseline);
+                EKGLine.Values.AddRange(correctedNList.Select(value => (object)value));
+            }
         }
 
         private void ResetUIButton_Click(object sender, RoutedEventArgs e)
@@ -287,7 +334,7 @@ namespace EKGApp
             if (CurrentPatientId != 0 && RRList.Count > 0 && CurrentJournalId == 0)
             {
                 AddJournalButton.IsEnabled = false;
-                await dbController.SaveJournalToPatient(CurrentPatientId,CommentTextBox.Text, RRList);
+                await dbController.SaveJournalToPatient(CurrentPatientId, CommentTextBox.Text, RRList);
                 ShowMessage("Journal Saved");
                 CommentTextBox.Text = "";
                 CurrentPatientId = 0;

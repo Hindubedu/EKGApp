@@ -30,7 +30,7 @@ namespace LogicLayer
                 .Include(j => j.Journals)
                     .ThenInclude(m => m.Measurements)
                 .FirstOrDefault(p => p.Id == id);
-            if (patient==null)
+            if (patient == null)
             {
                 return null;
             }
@@ -88,7 +88,7 @@ namespace LogicLayer
                     var journal = context.Journals
                         .Include(m => m.Measurements)
                         .FirstOrDefault(p => p.Id == identifier);
-                    if (journal==null)
+                    if (journal == null)
                     {
                         return null;
                     }
@@ -107,11 +107,11 @@ namespace LogicLayer
 
             var existingPatient = context.Patients
                 .Include(j => j.Journals)
-                    .ThenInclude(m => m.Measurements)
+                .ThenInclude(m => m.Measurements)
                 .FirstOrDefault(p => p.Id == patientId);
 
             if (existingPatient == null) return false;
-            
+
             existingPatient.FirstName = $"{firstName}";
             existingPatient.LastName = $"{lastName}";
             existingPatient.CPR = cpr;
@@ -181,7 +181,7 @@ namespace LogicLayer
         {
             var context = new DBContextClass();
             var journal = context.Journals.FirstOrDefault(x => x.Id == journalId);
-            if (journal==null)
+            if (journal == null)
             {
                 return false;
             }
@@ -193,7 +193,7 @@ namespace LogicLayer
         {
             var context = new DBContextClass();
             var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
-            if (existingPatient!=null)
+            if (existingPatient != null)
             {
                 return true;
             }
@@ -205,7 +205,7 @@ namespace LogicLayer
             var context = new DBContextClass();
             var existingPatient = context.Patients.FirstOrDefault(p => p.CPR == cpr);
             if (existingPatient == null) return false;
-            if (existingPatient.Id==id)
+            if (existingPatient.Id == id)
             {
                 return true;
             }

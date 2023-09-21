@@ -135,7 +135,18 @@ namespace EKGApp
             {
                 return;
             }
-            var saved = _dbController.EditPatient(CurrentPatientId, FirstNameTextBox.Text, LastNameTextBox.Text, CPRTextBox.Text);
+
+            bool saved = false;
+
+            try
+            {
+                saved = _dbController.EditPatient(CurrentPatientId, FirstNameTextBox.Text, LastNameTextBox.Text, CPRTextBox.Text);
+            }
+            catch (System.Exception exception)
+            {
+                MessageTextBox.Text = $"{exception.Message}";
+            }
+
             ShowMessage(saved? "Changes Saved":"No Patient Loaded");
             if (saved)
             {

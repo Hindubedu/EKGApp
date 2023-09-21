@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data Access Layer", "Data A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{36F511FF-C69E-4921-88BC-85A0BDE277E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModels", "DataModels\DataModels.csproj", "{54B07604-DA9F-4827-B45A-FE054C8E0534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModels", "DataModels\DataModels.csproj", "{54B07604-DA9F-4827-B45A-FE054C8E0534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMapping", "DataMapping\DataMapping.csproj", "{68F7A381-B03A-4487-9560-6A81FFF3C136}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataMapping", "DataMapping\DataMapping.csproj", "{68F7A381-B03A-4487-9560-6A81FFF3C136}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

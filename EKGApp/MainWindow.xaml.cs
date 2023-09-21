@@ -52,9 +52,10 @@ namespace EKGApp
             }
         }
 
-        private void LoadInitialCloudFiles()
+        private async Task LoadInitialCloudFiles()
         {
-            var sortedFiles = ConvertFileNames(loader.GetFileNames());
+            var results = await Task.Run(() =>loader.GetFileNames());
+            var sortedFiles = ConvertFileNames(results);
             EKGMeasurementCombobox.ItemsSource = sortedFiles;
             EKGMeasurementCombobox.DisplayMemberPath = "DisplayText";
 
@@ -155,7 +156,7 @@ namespace EKGApp
             Graf.AxisY[1].Separator.Step = 0.5;
         }
 
-        private void LoadFromCombobox_Click(object sender, RoutedEventArgs e)
+        private async void LoadFromCombobox_Click(object sender, RoutedEventArgs e)
         {
             CustomComboBoxItem selectedItem = (CustomComboBoxItem)EKGMeasurementCombobox.SelectedItem;
             string loadPath = selectedItem.DownloadValue;
@@ -168,14 +169,14 @@ namespace EKGApp
                 RRList.Clear();
                 var values = loader.LoadChoiceFromCloud(loadPath);
                 RRList.AddRange(values.Cast<double>());
-                UpdateGraph();
+                await UpdateGraph();
                 ShowMessage("Loading...");
             }
             CurrentJournalId = 0;
             AddJournalButton.IsEnabled = true;
         }
 
-        private void LoadNewestButton_Click(object sender, RoutedEventArgs e) ///Loads the newest measurement from the cloud and shows it on the graf, also updates the EKGmeasurementscombobox
+        private async void LoadNewestButton_Click(object sender, RoutedEventArgs e) ///Loads the newest measurement from the cloud and shows it on the graf, also updates the EKGmeasurementscombobox
         {
             EKGLine.Values.Clear();
             RRList.Clear();
@@ -183,7 +184,7 @@ namespace EKGApp
             var newest = ((CustomComboBoxItem)EKGMeasurementCombobox.Items[0]).DownloadValue;
             var values = loader.LoadChoiceFromCloud(newest);
             RRList.AddRange(values.Cast<double>());
-            UpdateGraph();
+            await UpdateGraph();
             ShowMessage("Loading...");
         }
 
@@ -267,7 +268,7 @@ namespace EKGApp
             ShowMessage("Loaded");
         }
 
-        private void JournalListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void JournalListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listbox = (ListBox)sender;
             var selectedJournalItem = (ListBoxItem)listbox.SelectedItem;
@@ -277,11 +278,11 @@ namespace EKGApp
                 var journal = dbController.LoadJournal(selectedJournalID);
                 CurrentJournalId = journal.Id;
                 UpdateJournalUIInfo(journal);
-                UpdateGraph();
+                await UpdateGraph();
             }
         }
 
-        private async void UpdateGraph()
+        private async Task UpdateGraph()
         {
             var historam = new Histogram();
             var baseline = historam.FindBaseLine(RRList);

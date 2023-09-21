@@ -58,8 +58,8 @@
         <Button x:Name="AddJournalButton" Content="Add journal" HorizontalAlignment="Left" Margin="487,219,0,0" VerticalAlignment="Top" Click="AddJournalButton_Click" Height="27" Width="68" Background="#FFE6CD98" BorderBrush="#FFEFB423" IsEnabled="True"/>
         <Button x:Name="CreateEditButton" Content="Edit/Create" HorizontalAlignment="Left" Margin="0,181,0,0" VerticalAlignment="Top" Click="CreateEditButton_Click" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1"/>
         <Button x:Name="CreateNewPatientButton" Content="New Patient" HorizontalAlignment="Left" Margin="299,181,0,0" VerticalAlignment="Top" Height="32" Width="109" Background="#FFE6CD98" BorderBrush="#FFEFB423" Grid.Column="1" Click="CreateNewPatientButton_Click"/>
-        <TextBlock x:Name="NameTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="5,43,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
-        <TextBlock x:Name="CPRTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="293,46,0,0" TextWrapping="Wrap" Text="CPR" VerticalAlignment="Top" Width="178"/>
+        <TextBlock x:Name="NameTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="5,43,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <TextBlock x:Name="CPRTextBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="293,46,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178"/>
 
     </Grid>
 </Window>
